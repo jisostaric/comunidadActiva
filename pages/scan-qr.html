@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escanear QR - ComunidadActiva</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: var(--background-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 5vh;
+        }
+        
+        .scan-container {
+            max-width: 500px;
+            width: 100%;
+            padding: var(--space-lg);
+        }
+        
+        .card {
+            background-color: var(--text-light);
+            border-radius: var(--border-radius-lg);
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mb-3 {
+            margin-bottom: var(--space-md);
+        }
+        
+        .mb-4 {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .camera-container {
+            width: 100%;
+            aspect-ratio: 1;
+            background-color: var(--gray-dark);
+            border-radius: var(--border-radius-md);
+            margin: var(--space-lg) 0;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .camera-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .scan-area {
+            width: 70%;
+            height: 70%;
+            border: 2px solid white;
+            border-radius: var(--border-radius-sm);
+            position: relative;
+        }
+        
+        .scan-corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-color: var(--primary-color);
+            border-width: 4px;
+        }
+        
+        .scan-corner-top-left {
+            top: -4px;
+            left: -4px;
+            border-top-style: solid;
+            border-left-style: solid;
+        }
+        
+        .scan-corner-top-right {
+            top: -4px;
+            right: -4px;
+            border-top-style: solid;
+            border-right-style: solid;
+        }
+        
+        .scan-corner-bottom-left {
+            bottom: -4px;
+            left: -4px;
+            border-bottom-style: solid;
+            border-left-style: solid;
+        }
+        
+        .scan-corner-bottom-right {
+            bottom: -4px;
+            right: -4px;
+            border-bottom-style: solid;
+            border-right-style: solid;
+        }
+        
+        .scan-line {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary-color);
+            animation: scanAnimation 2s linear infinite;
+        }
+        
+        @keyframes scanAnimation {
+            0% {
+                top: 0;
+            }
+            50% {
+                top: calc(100% - 2px);
+            }
+            100% {
+                top: 0;
+            }
+        }
+        
+        .scan-status {
+            position: absolute;
+            bottom: var(--space-md);
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .tabs {
+            display: flex;
+            width: 100%;
+            border-bottom: 1px solid var(--gray-light);
+            margin-bottom: var(--space-md);
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: var(--space-sm) 0;
+            cursor: pointer;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+        }
+        
+        .upload-qr {
+            border: 2px dashed var(--gray-light);
+            border-radius: var(--border-radius-md);
+            padding: var(--space-xl);
+            text-align: center;
+            margin: var(--space-lg) 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-qr:hover {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light-transparent);
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: var(--gray-medium);
+            margin-bottom: var(--space-md);
+        }
+        
+        .or-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: var(--gray-dark);
+            margin: var(--space-lg) 0;
+        }
+        
+        .or-divider::before,
+        .or-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .or-divider::before {
+            margin-right: var(--space-md);
+        }
+        
+        .or-divider::after {
+            margin-left: var(--space-md);
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon input {
+            padding-right: 40px;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            right: var(--space-md);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+        
+        @media (max-width: 576px) {
+            .scan-container {
+                padding: var(--space-md);
+            }
+            
+            .card {
+                padding: var(--space-md);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="scan-container">
+        <div class="card">
+            <div class="text-center mb-4">
+                <img src="../Imagenes/comunidadActivaIsotipo.png" alt="ComunidadActiva" style="max-width: 80px; margin-bottom: 1rem;">
+                <h1>Escanear código QR</h1>
+                <p>Escanea el código QR de tu consorcio para unirte</p>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active">Escanear</div>
+                <div class="tab">Subir imagen</div>
+                <div class="tab">Ingresar código</div>
+            </div>
+            
+            <!-- Pestaña de escaneo de cámara -->
+            <div class="scan-tab-content">
+                <div class="camera-container">
+                    <div style="font-size: 72px; opacity: 0.3;">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    
+                    <div class="camera-overlay">
+                        <div class="scan-area">
+                            <div class="scan-corner scan-corner-top-left"></div>
+                            <div class="scan-corner scan-corner-top-right"></div>
+                            <div class="scan-corner scan-corner-bottom-left"></div>
+                            <div class="scan-corner scan-corner-bottom-right"></div>
+                            <div class="scan-line"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="scan-status">
+                        <i class="fas fa-circle-notch fa-spin"></i> Buscando código QR...
+                    </div>
+                </div>
+                
+                <p class="text-center text-muted">Coloca el código QR dentro del recuadro para escanearlo automáticamente</p>
+                
+                <div style="margin-top: var(--space-lg);">
+                    <button class="btn btn-secondary" style="width: 100%;">
+                        <i class="fas fa-lightbulb"></i> Encender flash
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Pestaña de subir imagen (inicialmente oculta) -->
+            <div class="upload-tab-content" style="display: none;">
+                <label class="upload-qr">
+                    <div class="upload-icon">
+                        <i class="fas fa-file-image"></i>
+                    </div>
+                    <p>Arrastra y suelta la imagen del código QR aquí</p>
+                    <p class="text-muted">o haz clic para seleccionar un archivo</p>
+                    <input type="file" style="display: none;" accept="image/*">
+                </label>
+                
+                <p class="text-center text-muted">Formatos aceptados: JPG, PNG, GIF. Tamaño máximo: 5MB</p>
+            </div>
+            
+            <!-- Pestaña de ingresar código (inicialmente oculta) -->
+            <div class="code-tab-content" style="display: none;">
+                <p class="text-muted mb-3">Si tienes el código de invitación, puedes ingresarlo manualmente:</p>
+                
+                <div class="form-group">
+                    <label for="invitationCode" class="form-label">Código de invitación</label>
+                    <div class="input-with-icon">
+                        <input type="text" id="invitationCode" class="form-input" placeholder="Ej. BCOM-4532-XYZJ-7890">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+                
+                <div class="or-divider">o</div>
+                
+                <div class="form-group">
+                    <label for="consortiumId" class="form-label">ID de consorcio</label>
+                    <input type="text" id="consortiumId" class="form-input" placeholder="Ej. ComunidadSanMartin">
+                </div>
+                
+                <div class="form-group">
+                    <label for="accessKey" class="form-label">Clave de acceso</label>
+                    <input type="password" id="accessKey" class="form-input" placeholder="Proporcionada por el administrador">
+                </div>
+                
+                <div style="margin-top: var(--space-lg);">
+                    <button class="btn btn-primary" style="width: 100%;">Verificar y unirse</button>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="../index.html" class="btn btn-text">Volver al inicio de sesión</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../js/main.js"></script>
+</body>
+</html> 

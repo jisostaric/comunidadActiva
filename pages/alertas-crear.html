@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Alerta - ComunidadActiva</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .crear-alerta-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--text-light);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-xl);
+            margin-top: var(--space-xl);
+            margin-bottom: var(--space-xl);
+        }
+        
+        .form-section {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .tipo-alerta-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--space-md);
+            margin-top: var(--space-md);
+        }
+        
+        .tipo-alerta-option {
+            border: 1px solid var(--gray-light);
+            border-radius: var(--border-radius-md);
+            padding: var(--space-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .tipo-alerta-option:hover {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light-transparent);
+        }
+        
+        .tipo-alerta-option.selected {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light-transparent);
+        }
+        
+        .tipo-alerta-icon {
+            font-size: 32px;
+            margin-bottom: var(--space-sm);
+            color: var(--gray-dark);
+        }
+        
+        .tipo-alerta-option.selected .tipo-alerta-icon {
+            color: var(--primary-color);
+        }
+        
+        .tipo-alerta-option.emergencia .tipo-alerta-icon {
+            color: var(--error-color);
+        }
+        
+        .tipo-alerta-option.seguridad .tipo-alerta-icon {
+            color: var(--warning-color);
+        }
+        
+        .tipo-alerta-option.servicio .tipo-alerta-icon {
+            color: var(--accent-color);
+        }
+        
+        .tipo-alerta-option.informativa .tipo-alerta-icon {
+            color: var(--primary-color);
+        }
+        
+        .tipo-alerta-option.comunidad .tipo-alerta-icon {
+            color: var(--success-color);
+        }
+        
+        .tipo-alerta-titulo {
+            font-weight: 500;
+            margin-bottom: var(--space-xs);
+        }
+        
+        .tipo-alerta-desc {
+            font-size: var(--font-size-xs);
+            color: var(--gray-dark);
+        }
+        
+        .ubicacion-preview {
+            height: 200px;
+            background-color: var(--gray-light);
+            border-radius: var(--border-radius-md);
+            margin-top: var(--space-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-dark);
+        }
+        
+        .actions-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--space-md);
+            margin-top: var(--space-xl);
+        }
+        
+        .importancia-slider {
+            width: 100%;
+            margin-top: var(--space-sm);
+        }
+        
+        .importancia-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: var(--space-xs);
+            font-size: var(--font-size-xs);
+            color: var(--gray-dark);
+        }
+        
+        @media (max-width: 768px) {
+            .crear-alerta-container {
+                padding: var(--space-md);
+                margin-top: var(--space-md);
+                margin-bottom: var(--space-md);
+            }
+            
+            .tipo-alerta-options {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .actions-container {
+                flex-direction: column;
+            }
+            
+            .actions-container .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="feed.html" class="navbar-logo">
+                <img src="../Imagenes/comunidadActivaIsotipo.png" alt="ComunidadActiva" style="height: 30px; vertical-align: middle;"> ComunidadActiva
+            </a>
+            <ul class="navbar-menu">
+                <li class="navbar-item"><a href="feed.html" class="navbar-link"><i class="fas fa-home"></i> Inicio</a></li>
+                <li class="navbar-item"><a href="mensajeria.html" class="navbar-link"><i class="fas fa-envelope"></i> Mensajes</a></li>
+                <li class="navbar-item"><a href="perfil.html" class="navbar-link"><i class="fas fa-user"></i> Perfil</a></li>
+                <li class="navbar-item"><a href="notificaciones.html" class="navbar-link"><i class="fas fa-bell"></i> Notificaciones</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Contenido principal -->
+    <div class="container">
+        <div class="crear-alerta-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
+                <h2>Crear nueva alerta</h2>
+                <a href="alertas.html" class="btn btn-text"><i class="fas fa-times"></i> Cancelar</a>
+            </div>
+            
+            <form action="alertas.html">
+                <div class="form-section">
+                    <h3 class="section-title">Tipo de alerta</h3>
+                    <p class="section-desc" style="color: var(--gray-dark); margin-bottom: var(--space-md);">Selecciona el tipo de alerta que mejor describa la situación</p>
+                    
+                    <div class="tipo-alerta-options">
+                        <div class="tipo-alerta-option emergencia selected">
+                            <div class="tipo-alerta-icon">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                            <div class="tipo-alerta-titulo">Emergencia</div>
+                            <div class="tipo-alerta-desc">Situaciones que requieren atención inmediata</div>
+                        </div>
+                        
+                        <div class="tipo-alerta-option seguridad">
+                            <div class="tipo-alerta-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="tipo-alerta-titulo">Seguridad</div>
+                            <div class="tipo-alerta-desc">Alertas relacionadas con seguridad y vigilancia</div>
+                        </div>
+                        
+                        <div class="tipo-alerta-option servicio">
+                            <div class="tipo-alerta-icon">
+                                <i class="fas fa-wrench"></i>
+                            </div>
+                            <div class="tipo-alerta-titulo">Servicio</div>
+                            <div class="tipo-alerta-desc">Cortes o problemas en servicios comunitarios</div>
+                        </div>
+                        
+                        <div class="tipo-alerta-option informativa">
+                            <div class="tipo-alerta-icon">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div class="tipo-alerta-titulo">Informativa</div>
+                            <div class="tipo-alerta-desc">Información general relevante para la comunidad</div>
+                        </div>
+                        
+                        <div class="tipo-alerta-option comunidad">
+                            <div class="tipo-alerta-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="tipo-alerta-titulo">Comunidad</div>
+                            <div class="tipo-alerta-desc">Actividades y eventos comunitarios</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3 class="section-title">Detalles de la alerta</h3>
+                    
+                    <div class="form-group">
+                        <label for="tituloAlerta" class="form-label">Título de la alerta*</label>
+                        <input type="text" id="tituloAlerta" class="form-input" placeholder="Ej. Corte de agua programado" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descripcionAlerta" class="form-label">Descripción*</label>
+                        <textarea id="descripcionAlerta" class="form-input" rows="4" placeholder="Describe los detalles de la alerta, incluye toda la información relevante para los vecinos..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="importanciaAlerta" class="form-label">Nivel de importancia</label>
+                        <input type="range" id="importanciaAlerta" class="importancia-slider" min="1" max="5" value="3">
+                        <div class="importancia-labels">
+                            <span>Baja</span>
+                            <span>Media</span>
+                            <span>Alta</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fechaExpiracion" class="form-label">Fecha de expiración</label>
+                        <input type="date" id="fechaExpiracion" class="form-input">
+                        <div class="form-text">Deja en blanco si la alerta no tiene fecha de expiración</div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3 class="section-title">Ubicación (opcional)</h3>
+                    
+                    <div class="form-group">
+                        <label for="ubicacionAlerta" class="form-label">Dirección o área</label>
+                        <input type="text" id="ubicacionAlerta" class="form-input" placeholder="Ej. Sector Norte, Calle Principal">
+                    </div>
+                    
+                    <div class="ubicacion-preview">
+                        <i class="fas fa-map-marker-alt" style="font-size: 48px;"></i>
+                    </div>
+                    
+                    <div style="text-align: right; margin-top: var(--space-xs);">
+                        <button type="button" class="btn btn-text btn-sm">Seleccionar en el mapa</button>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3 class="section-title">Imágenes (opcional)</h3>
+                    
+                    <div class="form-group">
+                        <label for="imagenesAlerta" class="form-label">Adjuntar imágenes</label>
+                        <input type="file" id="imagenesAlerta" class="form-input" multiple accept="image/*">
+                        <div class="form-text">Puedes subir hasta 5 imágenes (JPG, PNG). Tamaño máximo: 5MB cada una.</div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3 class="section-title">Visibilidad</h3>
+                    
+                    <div class="form-group">
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="notificacionPush" checked>
+                            <label for="notificacionPush">Enviar notificación push a todos los vecinos</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="notificacionEmail">
+                            <label for="notificacionEmail">Enviar por email a todos los residentes</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="visibilidadAlerta" class="form-label">Visibilidad</label>
+                        <select id="visibilidadAlerta" class="form-input">
+                            <option value="todos">Todos los vecinos</option>
+                            <option value="sector">Solo mi sector</option>
+                            <option value="admin">Solo administradores</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="actions-container">
+                    <button type="button" class="btn btn-secondary">Guardar como borrador</button>
+                    <button type="submit" class="btn btn-primary">Publicar alerta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Navegación móvil -->
+    <div class="mobile-nav">
+        <div class="mobile-nav-menu">
+            <a href="feed.html" class="mobile-nav-item">
+                <i class="fas fa-home"></i>
+                <span class="mobile-nav-label">Inicio</span>
+            </a>
+            <a href="mensajeria.html" class="mobile-nav-item">
+                <i class="fas fa-envelope"></i>
+                <span class="mobile-nav-label">Mensajes</span>
+            </a>
+            <a href="alertas.html" class="mobile-nav-item active">
+                <i class="fas fa-bell"></i>
+                <span class="mobile-nav-label">Alertas</span>
+            </a>
+            <a href="grupos.html" class="mobile-nav-item">
+                <i class="fas fa-users"></i>
+                <span class="mobile-nav-label">Grupos</span>
+            </a>
+            <a href="perfil.html" class="mobile-nav-item">
+                <i class="fas fa-user"></i>
+                <span class="mobile-nav-label">Perfil</span>
+            </a>
+        </div>
+    </div>
+    
+    <script src="../js/main.js"></script>
+</body>
+</html> 

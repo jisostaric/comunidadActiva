@@ -19,6 +19,51 @@
             padding: var(--space-lg);
             box-shadow: var(--shadow-sm);
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar-item {
+            margin-bottom: var(--space-sm);
+        }
+        
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--border-radius-md);
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-link i {
+            margin-right: var(--space-md);
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-link:hover {
+            background-color: var(--primary-light-transparent);
+            color: var(--primary-color);
+        }
+        
+        .sidebar-link.active {
+            background-color: var(--primary-light-transparent);
+            color: var(--primary-color);
+            font-weight: 500;
         }
         
         .main-content {
@@ -495,7 +540,7 @@
                         
                         <div class="event-field">
                             <label for="event-title">Título del evento</label>
-                            <input type="text" id="event-title" value="Parrillada en casa">
+                            <input type="text" id="event-title" value="Asado en casa">
                         </div>
                         
                         <div class="event-field">
@@ -515,7 +560,7 @@
                         
                         <div class="event-field">
                             <label for="event-location">Ubicación</label>
-                            <input type="text" id="event-location" value="Mi casa, Sector Norte, Casa 23">
+                            <input type="text" id="event-location" value="Mi casa, Sector Norte, Lote 23">
                         </div>
                         
                         <div class="event-field">

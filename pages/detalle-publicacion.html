@@ -19,6 +19,51 @@
             padding: var(--space-lg);
             box-shadow: var(--shadow-sm);
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar-item {
+            margin-bottom: var(--space-sm);
+        }
+        
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--border-radius-md);
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-link i {
+            margin-right: var(--space-md);
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-link:hover {
+            background-color: var(--primary-light-transparent);
+            color: var(--primary-color);
+        }
+        
+        .sidebar-link.active {
+            background-color: var(--primary-light-transparent);
+            color: var(--primary-color);
+            font-weight: 500;
         }
         
         .main-content {
@@ -417,27 +462,21 @@
                 </a>
             </li>
             <li class="sidebar-item">
-                <a href="calendario.html" class="sidebar-link">
-                    <i class="far fa-calendar"></i>
-                    <span>Calendario</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
                 <a href="mapa.html" class="sidebar-link">
                     <i class="fas fa-map-marker-alt"></i>
                     <span>Mapa</span>
                 </a>
             </li>
             <li class="sidebar-item">
-                <a href="encuestas.html" class="sidebar-link">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>Encuestas</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
                 <a href="actividades.html" class="sidebar-link">
                     <i class="fas fa-child"></i>
                     <span>Actividades Infantiles</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="configuracion.html" class="sidebar-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Configuración</span>
                 </a>
             </li>
         </ul>
@@ -475,13 +514,12 @@
                 
                 <div class="post-content">
                     <div class="post-text">
-                        <p>Vecinos del barrio! Les cuento que este finde hago una parrillada en casa. Si escuchan música, ya saben por qué es 🍖🎵 Terminamos temprano, no se preocupen!</p>
-                        <p>Están todos invitados a pasar un rato. Traigan algo para tomar o algún postre si quieren. ¡Va a estar buenísimo!</p>
+                        <p>Vecinos del barrio! Les cuento que este finde hago un asado en casa. Si escuchan música, ya saben por qué es 🍖🎵 Terminamos temprano, no se preocupen!</p>
                         <p style="background-color: var(--secondary-light); padding: var(--space-md); border-radius: var(--border-radius-sm); margin-top: var(--space-md);">
                             <strong style="display: block; margin-bottom: var(--space-sm);">DETALLES:</strong>
                             <i class="far fa-calendar"></i> <strong>Cuándo:</strong> Sábado 25 de mayo<br>
                             <i class="far fa-clock"></i> <strong>Hora:</strong> Desde la 1 hasta tipo 7 de la tarde<br>
-                            <i class="fas fa-map-marker-alt"></i> <strong>Dónde:</strong> Mi casa, Sector Norte, Casa 23<br>
+                            <i class="fas fa-map-marker-alt"></i> <strong>Dónde:</strong> Mi casa, Sector Norte, Lote 23<br>
                             <i class="fas fa-user-friends"></i> <strong>Ya confirmaron:</strong> 8 vecinos<br>
                             <a href="#" class="btn btn-primary mt-2" style="font-size: var(--font-size-sm);">¡Me sumo!</a>
                         </p>
