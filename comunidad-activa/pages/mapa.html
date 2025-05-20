@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Comunitario - ComunidadActiva</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        .mapa-container {
+            display: flex;
+            height: calc(100vh - 70px);
+        }
+        
+        .mapa-sidebar {
+            width: 320px;
+            background-color: var(--text-light);
+            overflow-y: auto;
+            border-right: 1px solid var(--gray-light);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .mapa-content {
+            flex: 1;
+            position: relative;
+        }
+        
+        #mapa {
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .mapa-controls {
+            position: absolute;
+            top: var(--space-md);
+            right: var(--space-md);
+            z-index: 500;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+        
+        .mapa-control-btn {
+            background-color: var(--text-light);
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-md);
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .mapa-control-btn:hover {
+            background-color: var(--secondary-light);
+        }
+        
+        .mapa-categories {
+            padding: var(--space-md);
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .category-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--space-sm);
+            cursor: pointer;
+        }
+        
+        .category-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-right: var(--space-sm);
+        }
+        
+        .search-mapa {
+            padding: var(--space-md);
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .poi-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .poi-item {
+            padding: var(--space-md);
+            border-bottom: 1px solid var(--gray-light);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .poi-item:hover {
+            background-color: var(--secondary-light);
+        }
+        
+        .poi-title {
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+        }
+        
+        .poi-address {
+            font-size: var(--font-size-sm);
+            color: var(--gray-medium);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .poi-info {
+            font-size: var(--font-size-sm);
+            display: flex;
+            justify-content: space-between;
+            color: var(--gray-dark);
+        }
+        
+        .poi-category {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: var(--font-size-xs);
+            margin-right: var(--space-xs);
+            background-color: var(--secondary-light);
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--space-xs);
+        }
+        
+        .poi-card {
+            position: absolute;
+            bottom: var(--space-lg);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 500px;
+            background-color: var(--text-light);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-lg);
+            padding: var(--space-md);
+            z-index: 500;
+            display: none;
+        }
+        
+        .poi-card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .poi-card-title {
+            font-weight: 600;
+            font-size: var(--font-size-lg);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .poi-card-close {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: var(--gray-dark);
+        }
+        
+        .poi-card-details {
+            margin-bottom: var(--space-md);
+        }
+        
+        .poi-amenities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-xs);
+            margin-top: var(--space-sm);
+        }
+        
+        .poi-amenity {
+            display: flex;
+            align-items: center;
+            background-color: var(--secondary-light);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: var(--font-size-xs);
+        }
+        
+        .poi-amenity i {
+            margin-right: 4px;
+        }
+        
+        .adding-marker-mode {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            text-align: center;
+            padding: var(--space-sm);
+            z-index: 600;
+            font-weight: 500;
+            display: none;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .mapa-container {
+                flex-direction: column;
+            }
+            
+            .mapa-sidebar {
+                width: 100%;
+                height: 200px;
+                border-right: none;
+                border-bottom: 1px solid var(--gray-light);
+            }
+            
+            #mapa {
+                height: calc(100vh - 270px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="feed.html" class="navbar-logo">
+                <img src="../Imagenes/comunidadActivaIsotipo.png" alt="ComunidadActiva" style="height: 30px; vertical-align: middle;"> ComunidadActiva
+            </a>
+            <ul class="navbar-menu">
+                <li class="navbar-item"><a href="feed.html" class="navbar-link"><i class="fas fa-home"></i> Inicio</a></li>
+                <li class="navbar-item"><a href="mensajeria.html" class="navbar-link"><i class="fas fa-envelope"></i> Mensajes</a></li>
+                <li class="navbar-item"><a href="perfil.html" class="navbar-link"><i class="fas fa-user"></i> Perfil</a></li>
+                <li class="navbar-item"><a href="notificaciones.html" class="navbar-link"><i class="fas fa-bell"></i> Notificaciones</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Modo agregar marcador -->
+    <div class="adding-marker-mode" id="addingMarkerMode">
+        <i class="fas fa-map-marker-alt"></i> Haz clic en el mapa para añadir un punto de interés - <button id="cancelAddMarker" style="background: none; border: none; color: white; text-decoration: underline; cursor: pointer;">Cancelar</button>
+    </div>
+    
+    <!-- Contenido principal -->
+    <div class="mapa-container">
+        <!-- Sidebar de puntos de interés -->
+        <div class="mapa-sidebar">
+            <!-- Buscador de lugares -->
+            <div class="search-mapa">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <div style="position: relative;">
+                        <input type="text" class="form-input" placeholder="Buscar en el mapa..." style="padding-left: 40px;">
+                        <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--gray-medium);"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Categorías -->
+            <div class="mapa-categories">
+                <h3 class="mb-2">Categorías</h3>
+                
+                <div class="category-label">
+                    <input type="checkbox" id="cat-servicios" checked style="margin-right: var(--space-xs);">
+                    <span class="category-color" style="background-color: #3388ff;"></span>
+                    <label for="cat-servicios">Servicios</label>
+                </div>
+                
+                <div class="category-label">
+                    <input type="checkbox" id="cat-recreacion" checked style="margin-right: var(--space-xs);">
+                    <span class="category-color" style="background-color: #27AE60;"></span>
+                    <label for="cat-recreacion">Recreación</label>
+                </div>
+                
+                <div class="category-label">
+                    <input type="checkbox" id="cat-comercios" checked style="margin-right: var(--space-xs);">
+                    <span class="category-color" style="background-color: #F39C12;"></span>
+                    <label for="cat-comercios">Comercios</label>
+                </div>
+                
+                <div class="category-label">
+                    <input type="checkbox" id="cat-eventos" checked style="margin-right: var(--space-xs);">
+                    <span class="category-color" style="background-color: #E74C3C;"></span>
+                    <label for="cat-eventos">Eventos</label>
+                </div>
+                
+                <div class="category-label">
+                    <input type="checkbox" id="cat-alertas" checked style="margin-right: var(--space-xs);">
+                    <span class="category-color" style="background-color: #9B59B6;"></span>
+                    <label for="cat-alertas">Alertas</label>
+                </div>
+            </div>
+            
+            <!-- Lista de puntos de interés -->
+            <div class="poi-list">
+                <div class="poi-item" data-id="1">
+                    <div class="poi-title">Gimnasio Comunitario</div>
+                    <div class="poi-address">Av. Principal 123, Torre A, Nivel 3</div>
+                    <div class="poi-info">
+                        <div>
+                            <span class="poi-category" style="background-color: rgba(39, 174, 96, 0.2); color: #27AE60;">Recreación</span>
+                        </div>
+                        <div><i class="far fa-clock"></i> Abierto ahora</div>
+                    </div>
+                </div>
+                
+                <div class="poi-item" data-id="2">
+                    <div class="poi-title">Farmacia del Barrio</div>
+                    <div class="poi-address">Calle Secundaria 45, Local 2</div>
+                    <div class="poi-info">
+                        <div>
+                            <span class="poi-category" style="background-color: rgba(243, 156, 18, 0.2); color: #F39C12;">Comercio</span>
+                        </div>
+                        <div><i class="far fa-clock"></i> Cierra 22:00</div>
+                    </div>
+                </div>
+                
+                <div class="poi-item" data-id="3">
+                    <div class="poi-title">Club House</div>
+                    <div class="poi-address">Sector Oeste, junto a la pileta</div>
+                    <div class="poi-info">
+                        <div>
+                            <span class="poi-category" style="background-color: rgba(39, 174, 96, 0.2); color: #27AE60;">Recreación</span>
+                        </div>
+                        <div><i class="far fa-clock"></i> Abierto 24h</div>
+                    </div>
+                </div>
+                
+                <div class="poi-item" data-id="4">
+                    <div class="poi-title">Administración</div>
+                    <div class="poi-address">Entrada principal, oficina 101</div>
+                    <div class="poi-info">
+                        <div>
+                            <span class="poi-category" style="background-color: rgba(51, 136, 255, 0.2); color: #3388ff;">Servicio</span>
+                        </div>
+                        <div><i class="far fa-clock"></i> Cierra 18:00</div>
+                    </div>
+                </div>
+                
+                <div class="poi-item" data-id="5">
+                    <div class="poi-title">Evento: Feria de Artesanos</div>
+                    <div class="poi-address">Plaza central</div>
+                    <div class="poi-info">
+                        <div>
+                            <span class="poi-category" style="background-color: rgba(231, 76, 60, 0.2); color: #E74C3C;">Evento</span>
+                        </div>
+                        <div><i class="far fa-calendar-alt"></i> Sáb, 12 Ago</div>
+                    </div>
+                </div>
+                
+                <div class="poi-item" data-id="6">
+                    <div class="poi-title">Alerta: Obra en proceso</div>
+                    <div class="poi-address">Calle 4, entre Av. A y Av. B</div>
+                    <div class="poi-info">
+                        <div>
+                            <span class="poi-category" style="background-color: rgba(155, 89, 182, 0.2); color: #9B59B6;">Alerta</span>
+                        </div>
+                        <div><i class="far fa-calendar-alt"></i> Hasta 20 Ago</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mapa -->
+        <div class="mapa-content">
+            <div id="mapa"></div>
+            
+            <!-- Controles del mapa -->
+            <div class="mapa-controls">
+                <button class="mapa-control-btn" id="btnRecenter" title="Centrar mapa"><i class="fas fa-location-arrow"></i></button>
+                <button class="mapa-control-btn" id="btnZoomIn" title="Acercar"><i class="fas fa-plus"></i></button>
+                <button class="mapa-control-btn" id="btnZoomOut" title="Alejar"><i class="fas fa-minus"></i></button>
+                <button class="mapa-control-btn" id="btnAddMarker" title="Añadir punto de interés"><i class="fas fa-map-marker-alt"></i></button>
+                <button class="mapa-control-btn" id="btnMapType" title="Cambiar tipo de mapa"><i class="fas fa-layer-group"></i></button>
+            </div>
+            
+            <!-- Tarjeta de información de POI -->
+            <div class="poi-card" id="poiCard">
+                <div class="poi-card-header">
+                    <h3 class="poi-card-title">Gimnasio Comunitario</h3>
+                    <button class="poi-card-close" id="closePoiCard"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="poi-card-details">
+                    <p class="poi-address mb-2"><i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i> Av. Principal 123, Torre A, Nivel 3</p>
+                    <p class="mb-2"><i class="far fa-clock" style="margin-right: 5px;"></i> Horario: 6:00 - 22:00, todos los días</p>
+                    <p>Gimnasio equipado con máquinas cardiovasculares, de peso libre y área de entrenamiento funcional. Incluye vestuarios con duchas y lockers.</p>
+                    
+                    <div class="poi-amenities">
+                        <span class="poi-amenity"><i class="fas fa-shower"></i> Duchas</span>
+                        <span class="poi-amenity"><i class="fas fa-wifi"></i> Wi-Fi</span>
+                        <span class="poi-amenity"><i class="fas fa-tshirt"></i> Vestuarios</span>
+                        <span class="poi-amenity"><i class="fas fa-user-tie"></i> Instructor</span>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <button class="btn btn-secondary" style="flex: 1; margin-right: var(--space-sm);"><i class="fas fa-directions"></i> Cómo llegar</button>
+                    <button class="btn btn-primary" style="flex: 1;"><i class="fas fa-share-alt"></i> Compartir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Inicialización del mapa
+        const map = L.map('mapa').setView([-34.60376, -58.38162], 15); // Coordenadas de ejemplo
+        
+        // Capa base del mapa
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        
+        // Datos de ejemplo para marcadores
+        const poisData = [
+            { id: 1, lat: -34.60276, lng: -58.38262, title: "Gimnasio Comunitario", category: "Recreación", color: "#27AE60" },
+            { id: 2, lat: -34.60476, lng: -58.38362, title: "Farmacia del Barrio", category: "Comercio", color: "#F39C12" },
+            { id: 3, lat: -34.60576, lng: -58.37962, title: "Club House", category: "Recreación", color: "#27AE60" },
+            { id: 4, lat: -34.60176, lng: -58.38062, title: "Administración", category: "Servicio", color: "#3388ff" },
+            { id: 5, lat: -34.60376, lng: -58.37862, title: "Evento: Feria de Artesanos", category: "Evento", color: "#E74C3C" },
+            { id: 6, lat: -34.60276, lng: -58.38462, title: "Alerta: Obra en proceso", category: "Alerta", color: "#9B59B6" }
+        ];
+        
+        // Agregar marcadores al mapa
+        const markers = {};
+        poisData.forEach(poi => {
+            const marker = L.marker([poi.lat, poi.lng], {
+                icon: L.divIcon({
+                    className: 'custom-div-icon',
+                    html: `<div style="background-color: ${poi.color}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;"></div>`,
+                    iconSize: [30, 42],
+                    iconAnchor: [15, 42]
+                })
+            }).addTo(map);
+            
+            marker.on('click', () => showPoiCard(poi.id));
+            markers[poi.id] = marker;
+        });
+        
+        // Mostrar tarjeta de POI
+        function showPoiCard(id) {
+            const poi = poisData.find(p => p.id === id);
+            if (poi) {
+                document.getElementById('poiCard').style.display = 'block';
+                // Aquí se actualizaría la información de la tarjeta con los datos del POI seleccionado
+                map.setView([poi.lat, poi.lng], 17);
+            }
+        }
+        
+        // Cerrar tarjeta de POI
+        document.getElementById('closePoiCard').addEventListener('click', function() {
+            document.getElementById('poiCard').style.display = 'none';
+        });
+        
+        // Eventos de los controles del mapa
+        document.getElementById('btnRecenter').addEventListener('click', function() {
+            map.setView([-34.60376, -58.38162], 15);
+        });
+        
+        document.getElementById('btnZoomIn').addEventListener('click', function() {
+            map.zoomIn();
+        });
+        
+        document.getElementById('btnZoomOut').addEventListener('click', function() {
+            map.zoomOut();
+        });
+        
+        document.getElementById('btnAddMarker').addEventListener('click', function() {
+            document.getElementById('addingMarkerMode').style.display = 'block';
+            // Aquí se activaría el modo para agregar un nuevo marcador
+        });
+        
+        document.getElementById('cancelAddMarker').addEventListener('click', function() {
+            document.getElementById('addingMarkerMode').style.display = 'none';
+            // Aquí se desactivaría el modo para agregar un nuevo marcador
+        });
+        
+        document.getElementById('btnMapType').addEventListener('click', function() {
+            // Aquí se cambiaría entre diferentes capas del mapa (satélite, calles, etc.)
+        });
+        
+        // Eventos de los elementos de la lista
+        document.querySelectorAll('.poi-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const id = parseInt(this.getAttribute('data-id'));
+                showPoiCard(id);
+            });
+        });
+        
+        // Filtrado por categorías
+        document.querySelectorAll('.category-label input').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const category = this.id.replace('cat-', '');
+                // Aquí se filtrarían los marcadores según la categoría seleccionada
+            });
+        });
+    </script>
+</body>
+</html> 

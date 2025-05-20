@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupos - ComunidadActiva</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .grupos-container {
+            display: flex;
+            flex-direction: column;
+            padding: var(--space-lg) 0;
+        }
+        
+        .grupos-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .grupos-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--gray-light);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .grupos-tab {
+            padding: var(--space-md) var(--space-lg);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+        }
+        
+        .grupos-tab.active {
+            border-bottom: 3px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .grupos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--space-lg);
+        }
+        
+        .grupo-card {
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: var(--text-light);
+        }
+        
+        .grupo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .grupo-img {
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .grupo-privado {
+            position: absolute;
+            top: var(--space-sm);
+            right: var(--space-sm);
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: var(--font-size-xs);
+            display: flex;
+            align-items: center;
+        }
+        
+        .grupo-info {
+            padding: var(--space-md);
+        }
+        
+        .grupo-titulo {
+            font-weight: 600;
+            font-size: var(--font-size-lg);
+            margin-bottom: var(--space-xs);
+            color: var(--text-dark);
+        }
+        
+        .grupo-descripcion {
+            color: var(--gray-dark);
+            margin-bottom: var(--space-md);
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .grupo-stats {
+            display: flex;
+            justify-content: space-between;
+            padding-top: var(--space-sm);
+            border-top: 1px solid var(--gray-light);
+            color: var(--gray-dark);
+            font-size: var(--font-size-sm);
+        }
+        
+        .crear-grupo-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background-color: var(--text-light);
+            border-radius: var(--border-radius-md);
+            padding: var(--space-lg);
+            width: 100%;
+            max-width: 500px;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .buscar-grupo {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .grupo-categoria {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: var(--font-size-xs);
+            margin-right: var(--space-xs);
+            background-color: var(--secondary-light);
+            color: var(--primary-dark);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .grupo-acciones {
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--space-sm);
+            margin-top: var(--space-sm);
+        }
+        
+        /* Diseño responsive */
+        @media (max-width: 768px) {
+            .grupos-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .grupos-tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="feed.html" class="navbar-logo">
+                <img src="../Imagenes/comunidadActivaIsotipo.png" alt="ComunidadActiva" style="height: 30px; vertical-align: middle;"> ComunidadActiva
+            </a>
+            <ul class="navbar-menu">
+                <li class="navbar-item"><a href="feed.html" class="navbar-link"><i class="fas fa-home"></i> Inicio</a></li>
+                <li class="navbar-item"><a href="mensajeria.html" class="navbar-link"><i class="fas fa-envelope"></i> Mensajes</a></li>
+                <li class="navbar-item"><a href="perfil.html" class="navbar-link"><i class="fas fa-user"></i> Perfil</a></li>
+                <li class="navbar-item"><a href="notificaciones.html" class="navbar-link"><i class="fas fa-bell"></i> Notificaciones</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Contenido principal -->
+    <div class="container">
+        <div class="grupos-container">
+            <div class="grupos-header">
+                <h2>Grupos</h2>
+                <button class="btn btn-primary" id="btnCrearGrupo"><i class="fas fa-plus"></i> Crear grupo</button>
+            </div>
+            
+            <!-- Buscador de grupos -->
+            <div class="buscar-grupo">
+                <div class="form-group">
+                    <div style="position: relative;">
+                        <input type="text" class="form-input" placeholder="Buscar grupos..." style="padding-left: 40px;">
+                        <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--gray-medium);"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pestañas de navegación -->
+            <div class="grupos-tabs">
+                <div class="grupos-tab active">Mis grupos</div>
+                <div class="grupos-tab">Descubrir grupos</div>
+                <div class="grupos-tab">Por categoría</div>
+                <div class="grupos-tab">Invitaciones</div>
+            </div>
+            
+            <!-- Grid de grupos -->
+            <div class="grupos-grid">
+                <!-- Grupo 1 -->
+                <div class="grupo-card">
+                    <div class="grupo-img" style="background-color: var(--primary-light); display: flex; align-items: center; justify-content: center; color: white;">
+                        <i class="fas fa-home" style="font-size: 48px;"></i>
+                        <div class="grupo-privado">
+                            <i class="fas fa-lock" style="margin-right: 4px;"></i> Privado
+                        </div>
+                    </div>
+                    <div class="grupo-info">
+                        <div class="grupo-titulo">Comisión Sector Norte</div>
+                        <div class="grupo-descripcion">Grupo oficial para vecinos del Sector Norte del barrio. Acá compartimos todo lo importante, armamos reuniones y resolvemos temas entre todos.</div>
+                        <div>
+                            <span class="grupo-categoria">Administración</span>
+                            <span class="grupo-categoria">Oficial</span>
+                        </div>
+                        <div class="grupo-stats">
+                            <div><i class="fas fa-users"></i> 45 miembros</div>
+                            <div><i class="fas fa-comments"></i> Activo hoy</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Grupo 2 -->
+                <div class="grupo-card">
+                    <div class="grupo-img" style="background-color: var(--secondary-light); display: flex; align-items: center; justify-content: center; color: var(--primary-dark);">
+                        <i class="fas fa-book" style="font-size: 48px;"></i>
+                    </div>
+                    <div class="grupo-info">
+                        <div class="grupo-titulo">Club de Lectura</div>
+                        <div class="grupo-descripcion">Nos juntamos los jueves para charlar sobre libros, recomendar cositas nuevas y tomar algo mientras hablamos de lecturas. ¡Todos los vecinos son bienvenidos!</div>
+                        <div>
+                            <span class="grupo-categoria">Cultura</span>
+                            <span class="grupo-categoria">Recreación</span>
+                        </div>
+                        <div class="grupo-stats">
+                            <div><i class="fas fa-users"></i> 18 miembros</div>
+                            <div><i class="fas fa-comments"></i> Activo ayer</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Grupo 3 -->
+                <div class="grupo-card">
+                    <div class="grupo-img" style="background-color: var(--accent-light); display: flex; align-items: center; justify-content: center; color: white;">
+                        <i class="fas fa-graduation-cap" style="font-size: 48px;"></i>
+                        <div class="grupo-privado">
+                            <i class="fas fa-lock" style="margin-right: 4px;"></i> Privado
+                        </div>
+                    </div>
+                    <div class="grupo-info">
+                        <div class="grupo-titulo">Padres del Colegio San Martín</div>
+                        <div class="grupo-descripcion">Grupo para papás y mamás de los chicos del Colegio San Martín. Compartimos info sobre actividades, tareas y organizamos eventos para los chicos.</div>
+                        <div>
+                            <span class="grupo-categoria">Familia</span>
+                            <span class="grupo-categoria">Educación</span>
+                        </div>
+                        <div class="grupo-stats">
+                            <div><i class="fas fa-users"></i> 32 miembros</div>
+                            <div><i class="fas fa-comments"></i> Activo hace 2d</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Grupo 4 -->
+                <div class="grupo-card">
+                    <div class="grupo-img" style="background-color: var(--primary-color); display: flex; align-items: center; justify-content: center; color: white;">
+                        <i class="fas fa-running" style="font-size: 48px;"></i>
+                    </div>
+                    <div class="grupo-info">
+                        <div class="grupo-titulo">Running Matutino</div>
+                        <div class="grupo-descripcion">Grupo para vecinos que salimos a correr por las mañanas. Nos juntamos de lunes a viernes a las 7:00 en la entrada principal del barrio.</div>
+                        <div>
+                            <span class="grupo-categoria">Deportes</span>
+                            <span class="grupo-categoria">Salud</span>
+                        </div>
+                        <div class="grupo-stats">
+                            <div><i class="fas fa-users"></i> 12 miembros</div>
+                            <div><i class="fas fa-comments"></i> Activo hoy</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Grupo 5 -->
+                <div class="grupo-card">
+                    <div class="grupo-img" style="background-color: #27AE60; display: flex; align-items: center; justify-content: center; color: white;">
+                        <i class="fas fa-recycle" style="font-size: 48px;"></i>
+                    </div>
+                    <div class="grupo-info">
+                        <div class="grupo-titulo">Reciclaje Comunitario</div>
+                        <div class="grupo-descripcion">Organizamos iniciativas para reciclar en el barrio, compartimos tips para reducir basura y coordinamos cuando hay que juntar cosas especiales.</div>
+                        <div>
+                            <span class="grupo-categoria">Ecología</span>
+                            <span class="grupo-categoria">Comunidad</span>
+                        </div>
+                        <div class="grupo-stats">
+                            <div><i class="fas fa-users"></i> 27 miembros</div>
+                            <div><i class="fas fa-comments"></i> Activo hace 3d</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Grupo 6 -->
+                <div class="grupo-card">
+                    <div class="grupo-img" style="background-color: #E74C3C; display: flex; align-items: center; justify-content: center; color: white;">
+                        <i class="fas fa-shield-alt" style="font-size: 48px;"></i>
+                        <div class="grupo-privado">
+                            <i class="fas fa-lock" style="margin-right: 4px;"></i> Privado
+                        </div>
+                    </div>
+                    <div class="grupo-info">
+                        <div class="grupo-titulo">Comisión de Seguridad</div>
+                        <div class="grupo-descripcion">Grupo para mejorar la seguridad de nuestro barrio. Compartimos alertas, nos comunicamos con los guardias y proponemos ideas para estar más seguros.</div>
+                        <div>
+                            <span class="grupo-categoria">Seguridad</span>
+                            <span class="grupo-categoria">Comunidad</span>
+                        </div>
+                        <div class="grupo-stats">
+                            <div><i class="fas fa-users"></i> 15 miembros</div>
+                            <div><i class="fas fa-comments"></i> Activo hoy</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para crear grupo -->
+    <div class="crear-grupo-modal" id="crearGrupoModal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
+                <h3>Crear nuevo grupo</h3>
+                <button id="cerrarModal" style="background: none; border: none; font-size: 20px; cursor: pointer;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form>
+                <div class="form-group">
+                    <label for="nombreGrupo" class="form-label">Nombre del grupo</label>
+                    <input type="text" id="nombreGrupo" class="form-input" placeholder="Ej. Club de Ajedrez" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="descripcionGrupo" class="form-label">Descripción</label>
+                    <textarea id="descripcionGrupo" class="form-input" rows="3" placeholder="Describe el propósito del grupo..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="categoriaGrupo" class="form-label">Categoría</label>
+                    <select id="categoriaGrupo" class="form-input" required>
+                        <option value="">Seleccionar categoría</option>
+                        <option value="deportes">Deportes</option>
+                        <option value="cultura">Cultura</option>
+                        <option value="administracion">Administración</option>
+                        <option value="recreacion">Recreación</option>
+                        <option value="salud">Salud</option>
+                        <option value="educacion">Educación</option>
+                        <option value="familia">Familia</option>
+                        <option value="mascotas">Mascotas</option>
+                        <option value="seguridad">Seguridad</option>
+                        <option value="ecologia">Ecología</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="imagenGrupo" class="form-label">Imagen de portada</label>
+                    <input type="file" id="imagenGrupo" class="form-input">
+                </div>
+                
+                <div class="form-group">
+                    <div style="display: flex; align-items: center;">
+                        <input type="checkbox" id="grupoPrivado" style="margin-right: var(--space-xs);">
+                        <label for="grupoPrivado">Grupo privado (solo pueden unirse por invitación)</label>
+                    </div>
+                </div>
+                
+                <div class="grupo-acciones">
+                    <button type="button" class="btn btn-secondary" id="cancelarCrearGrupo">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Crear grupo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Modal de crear grupo
+        const modal = document.getElementById('crearGrupoModal');
+        const btnCrearGrupo = document.getElementById('btnCrearGrupo');
+        const cerrarModal = document.getElementById('cerrarModal');
+        const cancelarCrearGrupo = document.getElementById('cancelarCrearGrupo');
+        
+        btnCrearGrupo.addEventListener('click', function() {
+            modal.style.display = 'flex';
+        });
+        
+        cerrarModal.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+        
+        cancelarCrearGrupo.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+        
+        // Cerrar modal al hacer clic fuera
+        window.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+        
+        // Cambio de pestañas
+        const tabs = document.querySelectorAll('.grupos-tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                tabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                // Aquí se podría implementar la lógica para mostrar diferentes conjuntos de grupos
+            });
+        });
+    </script>
+</body>
+</html> 

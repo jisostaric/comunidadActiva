@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividades Infantiles - ComunidadActiva</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .actividades-container {
+            display: flex;
+            flex-direction: column;
+            padding: var(--space-lg) 0;
+        }
+        
+        .actividades-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .actividades-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--gray-light);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .actividades-tab {
+            padding: var(--space-md) var(--space-lg);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+        }
+        
+        .actividades-tab.active {
+            border-bottom: 3px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .actividades-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--space-lg);
+        }
+        
+        .actividad-card {
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: var(--text-light);
+        }
+        
+        .actividad-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .actividad-img {
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .actividad-edad {
+            position: absolute;
+            top: var(--space-sm);
+            right: var(--space-sm);
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: var(--font-size-xs);
+            display: flex;
+            align-items: center;
+        }
+        
+        .actividad-info {
+            padding: var(--space-md);
+        }
+        
+        .actividad-titulo {
+            font-weight: 600;
+            font-size: var(--font-size-lg);
+            margin-bottom: var(--space-xs);
+            color: var(--text-dark);
+        }
+        
+        .actividad-descripcion {
+            color: var(--gray-dark);
+            margin-bottom: var(--space-md);
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .actividad-detalles {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+            margin-bottom: var(--space-md);
+            font-size: var(--font-size-sm);
+        }
+        
+        .actividad-detalle {
+            display: flex;
+            align-items: center;
+        }
+        
+        .actividad-detalle i {
+            width: 20px;
+            margin-right: var(--space-xs);
+            color: var(--primary-color);
+        }
+        
+        .actividad-categoria {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: var(--font-size-xs);
+            margin-right: var(--space-xs);
+            background-color: var(--secondary-light);
+            color: var(--primary-dark);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .actividad-acciones {
+            display: flex;
+            justify-content: space-between;
+            padding-top: var(--space-sm);
+            border-top: 1px solid var(--gray-light);
+        }
+        
+        .inscripcion-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background-color: var(--text-light);
+            border-radius: var(--border-radius-md);
+            padding: var(--space-lg);
+            width: 100%;
+            max-width: 500px;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .filtro-actividades {
+            background-color: var(--text-light);
+            padding: var(--space-lg);
+            border-radius: var(--border-radius-md);
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .filtros-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--space-md);
+            margin-top: var(--space-md);
+        }
+        
+        /* Diseño responsive */
+        @media (max-width: 768px) {
+            .actividades-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .actividades-tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .filtros-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="feed.html" class="navbar-logo">
+                <img src="../Imagenes/comunidadActivaIsotipo.png" alt="ComunidadActiva" style="height: 30px; vertical-align: middle;"> ComunidadActiva
+            </a>
+            <ul class="navbar-menu">
+                <li class="navbar-item"><a href="feed.html" class="navbar-link"><i class="fas fa-home"></i> Inicio</a></li>
+                <li class="navbar-item"><a href="mensajeria.html" class="navbar-link"><i class="fas fa-envelope"></i> Mensajes</a></li>
+                <li class="navbar-item"><a href="perfil.html" class="navbar-link"><i class="fas fa-user"></i> Perfil</a></li>
+                <li class="navbar-item"><a href="notificaciones.html" class="navbar-link"><i class="fas fa-bell"></i> Notificaciones</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Contenido principal -->
+    <div class="container">
+        <div class="actividades-container">
+            <div class="actividades-header">
+                <h2>Actividades Infantiles</h2>
+                <button class="btn btn-primary" id="btnCrearActividad"><i class="fas fa-plus"></i> Proponer actividad</button>
+            </div>
+            
+            <!-- Filtros de actividades -->
+            <div class="filtro-actividades">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3>Filtros</h3>
+                    <button class="btn btn-text" id="limpiarFiltros">Limpiar filtros</button>
+                </div>
+                <div class="filtros-grid">
+                    <div class="form-group">
+                        <label class="form-label">Edad</label>
+                        <select class="form-input">
+                            <option value="">Todas las edades</option>
+                            <option value="0-2">0-2 años</option>
+                            <option value="3-5">3-5 años</option>
+                            <option value="6-8">6-8 años</option>
+                            <option value="9-12">9-12 años</option>
+                            <option value="13-17">13-17 años</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tipo</label>
+                        <select class="form-input">
+                            <option value="">Todos los tipos</option>
+                            <option value="deportiva">Deportiva</option>
+                            <option value="cultural">Cultural</option>
+                            <option value="educativa">Educativa</option>
+                            <option value="recreativa">Recreativa</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Día</label>
+                        <select class="form-input">
+                            <option value="">Todos los días</option>
+                            <option value="lunes">Lunes</option>
+                            <option value="martes">Martes</option>
+                            <option value="miercoles">Miércoles</option>
+                            <option value="jueves">Jueves</option>
+                            <option value="viernes">Viernes</option>
+                            <option value="sabado">Sábado</option>
+                            <option value="domingo">Domingo</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ubicación</label>
+                        <select class="form-input">
+                            <option value="">Todas las ubicaciones</option>
+                            <option value="clubhouse">Club House</option>
+                            <option value="parque">Parque Central</option>
+                            <option value="pileta">Pileta</option>
+                            <option value="cancha">Canchas</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pestañas de navegación -->
+            <div class="actividades-tabs">
+                <div class="actividades-tab active">Actuales</div>
+                <div class="actividades-tab">Próximas</div>
+                <div class="actividades-tab">Mis favoritas</div>
+                <div class="actividades-tab">Mis inscripciones</div>
+            </div>
+            
+            <!-- Grid de actividades -->
+            <div class="actividades-grid">
+                <!-- Actividad 1 -->
+                <div class="actividad-card">
+                    <div class="actividad-img" style="background-color: #4CAF50; display: flex; align-items: center; justify-content: center; color: white;">
+                        <i class="fas fa-futbol" style="font-size: 48px;"></i>
+                        <div class="actividad-edad">
+                            <i class="fas fa-child" style="margin-right: 4px;"></i> 6-12 años
+                        </div>
+                    </div>
+                    <div class="actividad-info">
+                        <div class="actividad-titulo">Fútbol infantil</div>
+                        <div class="actividad-descripcion">Clases de fútbol para chicos y chicas. Aprendemos técnicas básicas, jugamos partidos amistosos y nos divertimos en equipo.</div>
+                        <div class="actividad-detalles">
+                            <div class="actividad-detalle">
+                                <i class="far fa-clock"></i>
+                                <span>Martes y Jueves, 17:30 - 19:00</span>
+                            </div>
+                            <div class="actividad-detalle">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Cancha principal</span>
+                            </div>
+                            <div class="actividad-detalle">
+                                <i class="fas fa-user"></i>
+                                <span>Profesor: Diego Martínez</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="actividad-categoria">Deportiva</span>
+                            <span class="actividad-categoria">Grupal</span>
+                        </div>
+                        <div class="actividad-acciones">
+                            <button class="btn btn-text"><i class="far fa-star"></i> Favorito</button>
+                            <button class="btn btn-primary btn-sm inscribir-btn">Inscribir</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Actividad 2 -->
+                <div class="actividad-card">
+                    <div class="actividad-img" style="background-color: #9C27B0; display: flex; align-items: center; justify-content: center; color: white;">
+                        <i class="fas fa-palette" style="font-size: 48px;"></i>
+                        <div class="actividad-edad">
+                            <i class="fas fa-child" style="margin-right: 4px;"></i> 4-10 años
+                        </div>
+                    </div>
+                    <div class="actividad-info">
+                        <div class="actividad-titulo">Taller de Arte</div>
+                        <div class="actividad-descripcion">Espacio creativo donde los chicos aprenden diferentes técnicas artísticas. Cada semana trabajamos con materiales distintos: pintura, collage, arcilla y más.</div>
+                        <div class="actividad-detalles">
+                            <div class="actividad-detalle">
+                                <i class="far fa-clock"></i>
+                                <span>Lunes, 16:00 - 17:30</span>
+                            </div>
+                            <div class="actividad-detalle">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Salón multiuso - Club House</span>
+                            </div>
+                            <div class="actividad-detalle">
+                                <i class="fas fa-user"></i>
+                                <span>Profesora: Laura Giménez</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="actividad-categoria">Artística</span>
+                            <span class="actividad-categoria">Creativa</span>
+                        </div>
+                        <div class="actividad-acciones">
+                            <button class="btn btn-text"><i class="far fa-star"></i> Favorito</button>
+                            <button class="btn btn-primary btn-sm inscribir-btn">Inscribir</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Actividad 3 -->
+                <div class="actividad-card">
+                    <div class="actividad-img" style="background-color: #2196F3; display: flex; align-items: center; justify-content: center; color: white;">
+                        <i class="fas fa-swimming-pool" style="font-size: 48px;"></i>
+                        <div class="actividad-edad">
+                            <i class="fas fa-child" style="margin-right: 4px;"></i> 3-8 años
+                        </div>
+                    </div>
+                    <div class="actividad-info">
+                        <div class="actividad-titulo">Natación Inicial</div>
+                        <div class="actividad-descripcion">Clases de natación para los más chiquitos. Aprendemos a flotar, técnicas básicas y jugamos en el agua de forma segura y divertida.</div>
+                        <div class="actividad-detalles">
+                            <div class="actividad-detalle">
+                                <i class="far fa-clock"></i>
+                                <span>Miércoles y Viernes, 16:00 - 17:00</span>
+                            </div>
+                            <div class="actividad-detalle">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Pileta climatizada</span>
+                            </div>
+                            <div class="actividad-detalle">
+                                <i class="fas fa-user"></i>
+                                <span>Profesor: Martín López</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="actividad-categoria">Deportiva</span>
+                            <span class="actividad-categoria">Acuática</span>
+                        </div>
+                        <div class="actividad-acciones">
+                            <button class="btn btn-text"><i class="far fa-star"></i> Favorito</button>
+                            <button class="btn btn-primary btn-sm inscribir-btn">Inscribir</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Actividad 4 -->
+                <div class="actividad-card">
+                    <div class="actividad-img" style="background-color: #FF9800; display: flex; align-items: center; justify-content: center; color: white;">
+                        <i class="fas fa-chess" style="font-size: 48px;"></i>
+                        <div class="actividad-edad">
+                            <i class="fas fa-child" style="margin-right: 4px;"></i> 7-14 años
+                        </div>
+                    </div>
+                    <div class="actividad-info">
+                        <div class="actividad-titulo">Club de Ajedrez</div>
+                        <div class="actividad-descripcion">Aprendemos a jugar ajedrez mientras desarrollamos el pensamiento estratégico y lógico. Para principiantes y avanzados.</div>
+                        <div class="actividad-detalles">
+                            <div class="actividad-detalle">
+                                <i class="far fa-clock"></i>
+                                <span>Sábados, 11:00 - 12:30</span>
+                            </div>
+                            <div class="actividad-detalle">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Biblioteca - Club House</span>
+                            </div>
+                            <div class="actividad-detalle">
+                                <i class="fas fa-user"></i>
+                                <span>Profesor: Roberto Álvarez</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="actividad-categoria">Educativa</span>
+                            <span class="actividad-categoria">Estrategia</span>
+                        </div>
+                        <div class="actividad-acciones">
+                            <button class="btn btn-text"><i class="far fa-star"></i> Favorito</button>
+                            <button class="btn btn-primary btn-sm inscribir-btn">Inscribir</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Actividad 5 -->
+                <div class="actividad-card">
+                    <div class="actividad-img" style="background-color: #E91E63; display: flex; align-items: center; justify-content: center; color: white;">
+                        <i class="fas fa-music" style="font-size: 48px;"></i>
+                        <div class="actividad-edad">
+                            <i class="fas fa-child" style="margin-right: 4px;"></i> 5-12 años
+                        </div>
+                    </div>
+                    <div class="actividad-info">
+                        <div class="actividad-titulo">Taller de Música</div>
+                        <div class="actividad-descripcion">Introducción a instrumentos musicales, ritmo y canto. Los chicos exploran diferentes sonidos y aprenden los fundamentos de la música.</div>
+                        <div class="actividad-detalles">
+                            <div class="actividad-detalle">
+                                <i class="far fa-clock"></i>
+                                <span>Viernes, 17:30 - 19:00</span>
+                            </div>
+                            <div class="actividad-detalle">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Salón de Música - Club House</span>
+                            </div>
+                            <div class="actividad-detalle">
+                                <i class="fas fa-user"></i>
+                                <span>Profesor: Juan Pérez</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="actividad-categoria">Artística</span>
+                            <span class="actividad-categoria">Musical</span>
+                        </div>
+                        <div class="actividad-acciones">
+                            <button class="btn btn-text"><i class="far fa-star"></i> Favorito</button>
+                            <button class="btn btn-primary btn-sm inscribir-btn">Inscribir</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Actividad 6 -->
+                <div class="actividad-card">
+                    <div class="actividad-img" style="background-color: #795548; display: flex; align-items: center; justify-content: center; color: white;">
+                        <i class="fas fa-campground" style="font-size: 48px;"></i>
+                        <div class="actividad-edad">
+                            <i class="fas fa-child" style="margin-right: 4px;"></i> 8-14 años
+                        </div>
+                    </div>
+                    <div class="actividad-info">
+                        <div class="actividad-titulo">Club de Aventureros</div>
+                        <div class="actividad-descripcion">Actividades al aire libre donde aprendemos sobre la naturaleza, hacemos juegos de orientación, pequeñas excursiones y más.</div>
+                        <div class="actividad-detalles">
+                            <div class="actividad-detalle">
+                                <i class="far fa-clock"></i>
+                                <span>Domingo, 10:00 - 12:00</span>
+                            </div>
+                            <div class="actividad-detalle">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Parque Central</span>
+                            </div>
+                            <div class="actividad-detalle">
+                                <i class="fas fa-user"></i>
+                                <span>Coordinador: Pablo Torres</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="actividad-categoria">Recreativa</span>
+                            <span class="actividad-categoria">Naturaleza</span>
+                        </div>
+                        <div class="actividad-acciones">
+                            <button class="btn btn-text"><i class="far fa-star"></i> Favorito</button>
+                            <button class="btn btn-primary btn-sm inscribir-btn">Inscribir</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de inscripción -->
+    <div class="inscripcion-modal" id="inscripcionModal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
+                <h3>Inscribir a mi hijo/a</h3>
+                <button id="cerrarModal" style="background: none; border: none; font-size: 20px; cursor: pointer;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="inscripcionForm">
+                <div class="form-group">
+                    <label for="nombreNino" class="form-label">Nombre del niño/a</label>
+                    <input type="text" id="nombreNino" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edadNino" class="form-label">Edad</label>
+                    <input type="number" id="edadNino" class="form-input" min="1" max="17" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">¿Tiene alguna condición especial que debamos saber?</label>
+                    <textarea class="form-input" rows="3" placeholder="Alergias, medicación, necesidades especiales, etc."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Contacto de emergencia</label>
+                    <input type="tel" class="form-input" placeholder="Número de teléfono" required>
+                </div>
+                
+                <div class="form-group">
+                    <div style="display: flex; align-items: center;">
+                        <input type="checkbox" id="autorizacionFotos" style="margin-right: var(--space-xs);">
+                        <label for="autorizacionFotos">Autorizo a que se tomen fotos durante la actividad y puedan compartirse en la comunidad</label>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: flex-end; gap: var(--space-sm); margin-top: var(--space-lg);">
+                    <button type="button" class="btn btn-secondary" id="cancelarInscripcion">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Completar inscripción</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Modal de inscripción
+        const modal = document.getElementById('inscripcionModal');
+        const btnInscribir = document.querySelectorAll('.inscribir-btn');
+        const cerrarModal = document.getElementById('cerrarModal');
+        const cancelarInscripcion = document.getElementById('cancelarInscripcion');
+        const inscripcionForm = document.getElementById('inscripcionForm');
+        
+        btnInscribir.forEach(btn => {
+            btn.addEventListener('click', function() {
+                modal.style.display = 'flex';
+                // Se podría obtener información de la actividad seleccionada
+                // para personalizar el modal de inscripción
+            });
+        });
+        
+        cerrarModal.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+        
+        cancelarInscripcion.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+        
+        // Cerrar modal al hacer clic fuera
+        window.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+        
+        // Envío del formulario
+        inscripcionForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Aquí iría la lógica para procesar la inscripción
+            alert('¡Inscripción completada exitosamente!');
+            modal.style.display = 'none';
+        });
+        
+        // Cambio de pestañas
+        const tabs = document.querySelectorAll('.actividades-tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                tabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                // Aquí se podría implementar la lógica para mostrar diferentes conjuntos de actividades
+            });
+        });
+        
+        // Limpiar filtros
+        document.getElementById('limpiarFiltros').addEventListener('click', function() {
+            document.querySelectorAll('.filtro-actividades select').forEach(select => {
+                select.selectedIndex = 0;
+            });
+            // Aquí se podría implementar la lógica para actualizar las actividades mostradas
+        });
+        
+        // Botón para proponer actividad
+        document.getElementById('btnCrearActividad').addEventListener('click', function() {
+            // Aquí se podría implementar la lógica para abrir un formulario de propuesta de actividad
+            alert('¡Próximamente podrás proponer nuevas actividades para los chicos!');
+        });
+    </script>
+</body>
+</html> 

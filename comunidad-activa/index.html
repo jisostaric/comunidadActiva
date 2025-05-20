@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComunidadActiva - Red Social Vecinal</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container d-flex justify-center align-center" style="min-height: 100vh;">
+        <div class="login-container" style="max-width: 400px; width: 100%;">
+            <div class="card">
+                <div class="text-center mb-4">
+                    <img src="./Imagenes/comunidadActivaIsotipo.png" alt="ComunidadActiva" style="max-width: 80px; margin-bottom: 1rem;">
+                    <h1>ComunidadActiva</h1>
+                    <p class="mb-3">La red social para tu comunidad</p>
+                </div>
+                
+                <form action="./pages/feed.html" class="mb-3">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Correo electrónico</label>
+                        <input type="email" id="email" class="form-input" placeholder="tucorreo@ejemplo.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" id="password" class="form-input" placeholder="Tu contraseña" required>
+                    </div>
+                    
+                    <div class="d-flex justify-between align-center mb-3">
+                        <div>
+                            <input type="checkbox" id="remember">
+                            <label for="remember">Recordarme</label>
+                        </div>
+                        <a href="./pages/recuperar-password.html" class="text-sm" style="color: var(--primary-color);">¿Olvidaste tu contraseña?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Iniciar sesión</button>
+                </form>
+                
+                <div class="text-center mb-3">
+                    <p>O inicia sesión con:</p>
+                    <div class="social-login d-flex justify-center mt-2">
+                        <a href="#" class="social-btn" style="margin: 0 10px; font-size: 24px; color: #3b5998;"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-btn" style="margin: 0 10px; font-size: 24px; color: #db4a39;"><i class="fab fa-google"></i></a>
+                        <a href="#" class="social-btn" style="margin: 0 10px; font-size: 24px; color: #0e76a8;"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <p>¿No tienes cuenta? <a href="./pages/registro.html" style="color: var(--primary-color); font-weight: 500;">Regístrate</a></p>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <p>¿Eres administrador de consorcio?</p>
+                    <a href="./pages/consorcio-login.html" class="btn btn-secondary mt-2">Acceso para administradores</a>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <p>Escanea el código QR de tu consorcio</p>
+                    <a href="./pages/scan-qr.html" class="btn btn-accent mt-2">Escanear QR</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="./js/main.js"></script>
+</body>
+</html> 

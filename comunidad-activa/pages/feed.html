@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed Principal - ComunidadActiva</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Estilos específicos para el feed */
+        .sidebar {
+            width: 260px;
+            background: var(--text-light);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            overflow-y: auto;
+        }
+        
+        .main-content {
+            margin-left: 260px;
+            padding: var(--space-lg);
+        }
+        
+        .post {
+            border-radius: var(--border-radius-md);
+            background-color: var(--text-light);
+            margin-bottom: var(--space-lg);
+            padding: 0;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+        
+        .post-header {
+            display: flex;
+            align-items: center;
+            padding: var(--space-md);
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .post-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: var(--space-md);
+        }
+        
+        .post-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .post-meta {
+            flex: 1;
+        }
+        
+        .post-author {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+        
+        .post-time {
+            font-size: var(--font-size-xs);
+            color: var(--gray-medium);
+        }
+        
+        .post-options {
+            color: var(--gray-dark);
+            cursor: pointer;
+        }
+        
+        .post-content {
+            padding: var(--space-md);
+        }
+        
+        .post-text {
+            margin-bottom: var(--space-md);
+        }
+        
+        .post-image {
+            width: 100%;
+            border-radius: var(--border-radius-sm);
+            margin-bottom: var(--space-md);
+        }
+        
+        .post-actions {
+            display: flex;
+            border-top: 1px solid var(--gray-light);
+            padding: var(--space-sm) var(--space-md);
+        }
+        
+        .post-action {
+            display: flex;
+            align-items: center;
+            margin-right: var(--space-xl);
+            color: var(--gray-dark);
+            cursor: pointer;
+        }
+        
+        .post-action i {
+            margin-right: var(--space-xs);
+        }
+        
+        .post-action:hover {
+            color: var(--primary-color);
+        }
+        
+        .post-action.liked {
+            color: var(--accent-color);
+        }
+        
+        .post-comments {
+            padding: var(--space-md);
+            background-color: var(--secondary-light);
+            border-top: 1px solid var(--gray-light);
+        }
+        
+        .comment {
+            display: flex;
+            margin-bottom: var(--space-sm);
+            padding-bottom: var(--space-sm);
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .comment:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: var(--space-sm);
+        }
+        
+        .comment-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .comment-content {
+            flex: 1;
+        }
+        
+        .comment-author {
+            font-weight: 500;
+            font-size: var(--font-size-sm);
+            margin-bottom: 2px;
+        }
+        
+        .comment-text {
+            font-size: var(--font-size-sm);
+        }
+        
+        .comment-form {
+            display: flex;
+            align-items: center;
+            padding: var(--space-sm) var(--space-md);
+            border-top: 1px solid var(--gray-light);
+        }
+        
+        .comment-input {
+            flex: 1;
+            border: 1px solid var(--gray-light);
+            border-radius: 20px;
+            padding: var(--space-xs) var(--space-md);
+            margin-right: var(--space-sm);
+        }
+        
+        .create-post {
+            display: flex;
+            align-items: center;
+            padding: var(--space-md);
+            background-color: var(--text-light);
+            border-radius: var(--border-radius-md);
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .create-post-input {
+            flex: 1;
+            border: 1px solid var(--gray-light);
+            border-radius: var(--border-radius-md);
+            padding: var(--space-sm) var(--space-md);
+            margin-left: var(--space-md);
+            cursor: pointer;
+            background-color: var(--gray-light);
+        }
+        
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin-top: var(--space-lg);
+        }
+        
+        .sidebar-item {
+            margin-bottom: var(--space-md);
+        }
+        
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            color: var(--text-dark);
+            text-decoration: none;
+            padding: var(--space-sm) 0;
+            transition: color 0.3s ease;
+        }
+        
+        .sidebar-link:hover, .sidebar-link.active {
+            color: var(--primary-color);
+        }
+        
+        .sidebar-link i {
+            margin-right: var(--space-md);
+            width: 20px;
+            text-align: center;
+        }
+        
+        .categories {
+            display: flex;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+            overflow-x: auto;
+            padding-bottom: var(--space-sm);
+        }
+        
+        .category {
+            background-color: var(--text-light);
+            color: var(--gray-dark);
+            border-radius: 20px;
+            padding: var(--space-xs) var(--space-md);
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .category.active {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+        }
+        
+        /* Estilos para la barra lateral derecha */
+        .right-sidebar {
+            width: 300px;
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100vh;
+            background: var(--text-light);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            overflow-y: auto;
+        }
+        
+        .content-wrapper {
+            max-width: calc(100% - 560px);
+            margin: 0 auto;
+        }
+        
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--text-light);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        
+        .mobile-nav-menu {
+            display: flex;
+            justify-content: space-around;
+            padding: var(--space-sm) 0;
+        }
+        
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--gray-dark);
+        }
+        
+        .mobile-nav-item.active {
+            color: var(--primary-color);
+        }
+        
+        .mobile-nav-item i {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        
+        .mobile-nav-label {
+            font-size: var(--font-size-xs);
+        }
+        
+        @media (max-width: 1200px) {
+            .right-sidebar {
+                display: none;
+            }
+            
+            .content-wrapper {
+                max-width: calc(100% - 260px);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding-bottom: 70px;
+            }
+            
+            .content-wrapper {
+                max-width: 100%;
+            }
+            
+            .mobile-nav {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar izquierdo -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="../Imagenes/comunidadActivaIsotipo.png" alt="ComunidadActiva" style="max-width: 40px; margin-right: 10px;"> 
+            <span style="font-weight: 700; font-size: var(--font-size-lg); color: var(--primary-dark);">ComunidadActiva</span>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li class="sidebar-item">
+                <a href="feed.html" class="sidebar-link active">
+                    <i class="fas fa-home"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="perfil.html" class="sidebar-link">
+                    <i class="fas fa-user"></i>
+                    <span>Mi Perfil</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="mensajeria.html" class="sidebar-link">
+                    <i class="fas fa-comment"></i>
+                    <span>Mensajes</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="grupos.html" class="sidebar-link">
+                    <i class="fas fa-users"></i>
+                    <span>Grupos</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="alertas.html" class="sidebar-link">
+                    <i class="fas fa-bell"></i>
+                    <span>Alertas</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="calendario.html" class="sidebar-link">
+                    <i class="far fa-calendar"></i>
+                    <span>Calendario</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="mapa.html" class="sidebar-link">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Mapa</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="encuestas.html" class="sidebar-link">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Encuestas</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="actividades.html" class="sidebar-link">
+                    <i class="fas fa-child"></i>
+                    <span>Actividades Infantiles</span>
+                </a>
+            </li>
+        </ul>
+        
+        <div style="margin-top: auto; padding-top: var(--space-xl);">
+            <a href="../index.html" class="sidebar-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <div class="content-wrapper">
+            <h2 class="mb-3">Feed Principal</h2>
+            
+            <!-- Filtros por categoría -->
+            <div class="categories">
+                <div class="category active">Todos</div>
+                <div class="category">Anuncios</div>
+                <div class="category">Eventos</div>
+                <div class="category">Seguridad</div>
+                <div class="category">Mascotas</div>
+                <div class="category">Deportes</div>
+                <div class="category">Niños</div>
+                <div class="category">Servicios</div>
+                <div class="category">Ventas</div>
+            </div>
+            
+            <!-- Crear publicación -->
+            <div class="create-post">
+                <div class="user-avatar">
+                    <img src="../Imagenes/avatarUsuario.png" alt="User Avatar">
+                </div>
+                <div class="create-post-input" onclick="location.href='crear-publicacion.html'">
+                    ¿Qué estás pensando?
+                </div>
+            </div>
+            
+            <!-- Publicaciones -->
+            <div class="post">
+                <div class="post-header">
+                    <div class="post-avatar">
+                        <img src="../Imagenes/avatarUsuario.png" alt="User Avatar">
+                    </div>
+                    <div class="post-meta">
+                        <div class="post-author">Laura Méndez</div>
+                        <div class="post-time">Hace 2 horas · <i class="fas fa-globe"></i> Público</div>
+                    </div>
+                    <div class="post-options">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </div>
+                </div>
+                
+                <div class="post-content">
+                    <div class="post-text">
+                        <p>Vecinos del barrio! Les cuento que este finde hago un asado en casa. Si escuchan música, ya saben por qué es 🍖🎵 Terminamos temprano, no se preocupen!</p>
+                        <p style="background-color: var(--secondary-light); padding: var(--space-sm); border-radius: var(--border-radius-sm); margin-top: var(--space-sm);">
+                            <strong>Cuándo:</strong> Sábado 25 de mayo, a eso de la 1 de la tarde<br>
+                            <strong>Dónde:</strong> Mi casa, Sector Norte, lote 23
+                        </p>
+                    </div>
+                    <div style="height: 200px; background-color: var(--primary-light); border-radius: var(--border-radius-sm); display: flex; align-items: center; justify-content: center; color: white; margin-bottom: var(--space-md);">
+                        <i class="fas fa-utensils" style="font-size: 48px;"></i>
+                    </div>
+                </div>
+                
+                <div class="post-actions">
+                    <div class="post-action">
+                        <i class="far fa-thumbs-up"></i> 15 Me gusta
+                    </div>
+                    <div class="post-action">
+                        <i class="far fa-comment"></i> 3 Comentarios
+                    </div>
+                    <div class="post-action">
+                        <i class="far fa-share-square"></i> Compartir
+                    </div>
+                </div>
+                
+                <div class="post-comments">
+                    <div class="comment">
+                        <div class="comment-avatar">
+                            <img src="../Imagenes/avatarUsuario.png" alt="User Avatar">
+                        </div>
+                        <div class="comment-content">
+                            <div class="comment-author">Carlos Rodríguez</div>
+                            <div class="comment-text">¡Qué buena! ¿Puedo pasar a saludar? 😊</div>
+                        </div>
+                    </div>
+                    
+                    <div class="comment">
+                        <div class="comment-avatar">
+                            <img src="../Imagenes/avatarUsuario.png" alt="User Avatar">
+                        </div>
+                        <div class="comment-content">
+                            <div class="comment-author">Ana Gómez</div>
+                            <div class="comment-text">Gracias por avisar Laura! Se agradece la consideración.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="comment-form">
+                    <input type="text" class="comment-input" placeholder="Escribe un comentario...">
+                    <button class="btn btn-primary" style="padding: var(--space-xs) var(--space-sm);"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+            
+            <div class="post">
+                <div class="post-header">
+                    <div class="post-avatar">
+                        <img src="../Imagenes/avatarUsuario.png" alt="User Avatar">
+                    </div>
+                    <div class="post-meta">
+                        <div class="post-author">Martín Sánchez · <span style="color: var(--primary-color);">Administración</span></div>
+                        <div class="post-time">Hace 5 horas · <i class="fas fa-bullhorn"></i> Anuncio</div>
+                    </div>
+                    <div class="post-options">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </div>
+                </div>
+                
+                <div class="post-content">
+                    <div class="post-text">
+                        <p style="font-weight: 500; color: var(--accent-color); font-size: var(--font-size-lg);">¡OJO CON ESTO!</p>
+                        <p>¡Hola vecinos! Les aviso que mañana de 9 a 1 vamos a hacer el mantenimiento de las bombas de agua. No vamos a tener agua durante ese tiempo, así que mejor vayan guardando en bidones o baldes lo que necesiten.</p>
+                        <p>¡Gracias por la buena onda!</p>
+                    </div>
+                </div>
+                
+                <div class="post-actions">
+                    <div class="post-action">
+                        <i class="far fa-thumbs-up"></i> 42 Me gusta
+                    </div>
+                    <div class="post-action">
+                        <i class="far fa-comment"></i> 7 Comentarios
+                    </div>
+                    <div class="post-action">
+                        <i class="far fa-share-square"></i> Compartir
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post">
+                <div class="post-header">
+                    <div class="post-avatar">
+                        <img src="../Imagenes/avatarUsuario.png" alt="User Avatar">
+                    </div>
+                    <div class="post-meta">
+                        <div class="post-author">Grupo: Padres del Colegio San Martín</div>
+                        <div class="post-time">Hace 1 día · <i class="fas fa-users"></i> Miembros del grupo</div>
+                    </div>
+                    <div class="post-options">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </div>
+                </div>
+                
+                <div class="post-content">
+                    <div class="post-text">
+                        <p>¡Buenas! Estamos armando un partidito para los chicos este domingo en el parque central del barrio. Para todos los peques de 8 a 12 años.</p>
+                        <p>Llevamos jugos y algo para picar. Si alguien quiere sumar algo más, ¡genial!</p>
+                        <p>Avisen por acá cuántos vienen para organizarnos mejor.</p>
+                    </div>
+                    <div style="height: 200px; background-color: var(--secondary-color); border-radius: var(--border-radius-sm); display: flex; align-items: center; justify-content: center; color: var(--primary-dark); margin-bottom: var(--space-md);">
+                        <i class="fas fa-futbol" style="font-size: 48px;"></i>
+                    </div>
+                </div>
+                
+                <div class="post-actions">
+                    <div class="post-action">
+                        <i class="far fa-thumbs-up"></i> 28 Me gusta
+                    </div>
+                    <div class="post-action">
+                        <i class="far fa-comment"></i> 14 Comentarios
+                    </div>
+                    <div class="post-action">
+                        <i class="far fa-share-square"></i> Compartir
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sidebar derecho -->
+    <div class="right-sidebar">
+        <h3 class="mb-3">Eventos próximos</h3>
+        <div class="card" style="padding: var(--space-md);">
+            <h4 style="font-size: var(--font-size-md);">Asamblea anual de vecinos</h4>
+            <p style="font-size: var(--font-size-sm);">
+                <i class="far fa-calendar"></i> 30 de mayo, 19:00hs<br>
+                <i class="fas fa-map-marker-alt"></i> Salón de usos múltiples
+            </p>
+            <button class="btn btn-secondary mt-2" style="width: 100%; padding: var(--space-xs) var(--space-sm); font-size: var(--font-size-sm);">Ver detalles</button>
+        </div>
+        
+        <h3 class="mb-3 mt-4">Alertas recientes</h3>
+        <div class="card" style="padding: var(--space-md); background-color: rgba(242, 116, 87, 0.1);">
+            <div style="display: flex; align-items: center;">
+                <i class="fas fa-exclamation-triangle" style="color: var(--accent-color); font-size: 24px; margin-right: var(--space-sm);"></i>
+                <div>
+                    <h4 style="font-size: var(--font-size-md);">Fuga de agua</h4>
+                    <p style="font-size: var(--font-size-sm);">
+                        <i class="fas fa-map-marker-alt"></i> Estacionamiento nivel 2<br>
+                        <i class="far fa-clock"></i> Reportada hace 3 horas
+                    </p>
+                </div>
+            </div>
+            <button class="btn btn-accent mt-2" style="width: 100%; padding: var(--space-xs) var(--space-sm); font-size: var(--font-size-sm);">Ver detalles</button>
+        </div>
+        
+        <h3 class="mb-3 mt-4">Grupos sugeridos</h3>
+        <div class="card" style="padding: var(--space-md);">
+            <div style="display: flex; align-items: center;">
+                <div style="width: 50px; height: 50px; border-radius: var(--border-radius-sm); background-color: var(--secondary-light); display: flex; align-items: center; justify-content: center; margin-right: var(--space-sm);">
+                    <i class="fas fa-seedling" style="font-size: 24px; color: var(--primary-dark);"></i>
+                </div>
+                <div>
+                    <h4 style="font-size: var(--font-size-md);">Huerta del Barrio</h4>
+                    <p style="font-size: var(--font-size-xs);">32 miembros</p>
+                </div>
+            </div>
+            <button class="btn btn-primary mt-2" style="width: 100%; padding: var(--space-xs) var(--space-sm); font-size: var(--font-size-sm);">Unirse</button>
+        </div>
+    </div>
+    
+    <!-- Navegación móvil -->
+    <div class="mobile-nav">
+        <div class="mobile-nav-menu">
+            <a href="feed.html" class="mobile-nav-item active">
+                <i class="fas fa-home"></i>
+                <span class="mobile-nav-label">Inicio</span>
+            </a>
+            <a href="grupos.html" class="mobile-nav-item">
+                <i class="fas fa-users"></i>
+                <span class="mobile-nav-label">Grupos</span>
+            </a>
+            <a href="crear-publicacion.html" class="mobile-nav-item">
+                <i class="fas fa-plus-circle"></i>
+                <span class="mobile-nav-label">Publicar</span>
+            </a>
+            <a href="alertas.html" class="mobile-nav-item">
+                <i class="fas fa-bell"></i>
+                <span class="mobile-nav-label">Alertas</span>
+            </a>
+            <a href="perfil.html" class="mobile-nav-item">
+                <i class="fas fa-user"></i>
+                <span class="mobile-nav-label">Perfil</span>
+            </a>
+        </div>
+    </div>
+    
+    <script src="../js/main.js"></script>
+</body>
+</html> 

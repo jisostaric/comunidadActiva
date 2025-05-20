@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - ComunidadActiva</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container d-flex justify-center align-center" style="min-height: 100vh; padding: var(--space-xl) 0;">
+        <div class="register-container" style="max-width: 600px; width: 100%;">
+            <div class="card">
+                <div class="text-center mb-4">
+                    <a href="../index.html" class="back-link" style="position: absolute; left: var(--space-lg); color: var(--gray-dark);">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </a>
+                    <img src="../Imagenes/comunidadActivaIsotipo.png" alt="ComunidadActiva" style="max-width: 80px; margin-bottom: 1rem;">
+                    <h1>Únete a ComunidadActiva</h1>
+                    <p class="mb-3">Completa tus datos para crear tu cuenta</p>
+                </div>
+                
+                <!-- Indicador de pasos -->
+                <div class="steps-indicator d-flex justify-between mb-4">
+                    <div class="step active">
+                        <div class="step-number" style="width: 30px; height: 30px; border-radius: 50%; background-color: var(--primary-color); color: white; display: flex; justify-content: center; align-items: center; margin: 0 auto;">1</div>
+                        <div class="step-label" style="font-size: var(--font-size-sm); margin-top: var(--space-xs);">Datos básicos</div>
+                    </div>
+                    <div class="step-line" style="flex-grow: 1; height: 2px; background-color: var(--gray-light); margin: 15px var(--space-sm);"></div>
+                    <div class="step">
+                        <div class="step-number" style="width: 30px; height: 30px; border-radius: 50%; background-color: var(--gray-light); color: var(--text-dark); display: flex; justify-content: center; align-items: center; margin: 0 auto;">2</div>
+                        <div class="step-label" style="font-size: var(--font-size-sm); margin-top: var(--space-xs);">Comunidad</div>
+                    </div>
+                    <div class="step-line" style="flex-grow: 1; height: 2px; background-color: var(--gray-light); margin: 15px var(--space-sm);"></div>
+                    <div class="step">
+                        <div class="step-number" style="width: 30px; height: 30px; border-radius: 50%; background-color: var(--gray-light); color: var(--text-dark); display: flex; justify-content: center; align-items: center; margin: 0 auto;">3</div>
+                        <div class="step-label" style="font-size: var(--font-size-sm); margin-top: var(--space-xs);">Perfil</div>
+                    </div>
+                </div>
+                
+                <form action="registro-paso2.html" class="mb-3">
+                    <div class="form-group">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" id="nombre" class="form-input" placeholder="Tu nombre" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="apellido" class="form-label">Apellido</label>
+                        <input type="text" id="apellido" class="form-input" placeholder="Tu apellido" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email" class="form-label">Correo electrónico</label>
+                        <input type="email" id="email" class="form-input" placeholder="tucorreo@ejemplo.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" id="password" class="form-input" placeholder="Mínimo 8 caracteres" required minlength="8">
+                        <p style="font-size: var(--font-size-xs); color: var(--gray-dark); margin-top: var(--space-xs);">
+                            La contraseña debe tener al menos 8 caracteres, incluir una letra mayúscula, un número y un carácter especial.
+                        </p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirm-password" class="form-label">Confirmar contraseña</label>
+                        <input type="password" id="confirm-password" class="form-input" placeholder="Repite tu contraseña" required>
+                    </div>
+                    
+                    <div class="form-group d-flex align-center">
+                        <input type="checkbox" id="terms" required>
+                        <label for="terms" style="margin-left: var(--space-sm);">
+                            Acepto los <a href="#" style="color: var(--primary-color);">Términos de Servicio</a> y la <a href="#" style="color: var(--primary-color);">Política de Privacidad</a>
+                        </label>
+                    </div>
+                    
+                    <div class="form-group d-flex align-center">
+                        <input type="checkbox" id="newsletter">
+                        <label for="newsletter" style="margin-left: var(--space-sm);">
+                            Quiero recibir noticias y actualizaciones por correo electrónico
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Continuar</button>
+                </form>
+                
+                <div class="text-center">
+                    <p>¿Ya tienes cuenta? <a href="../index.html" style="color: var(--primary-color); font-weight: 500;">Inicia sesión</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../js/main.js"></script>
+</body>
+</html> 

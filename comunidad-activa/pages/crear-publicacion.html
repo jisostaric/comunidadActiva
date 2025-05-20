@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Publicación - ComunidadActiva</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Estilos específicos para crear publicación */
+        .sidebar {
+            width: 260px;
+            background: var(--text-light);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            overflow-y: auto;
+        }
+        
+        .main-content {
+            margin-left: 260px;
+            padding: var(--space-lg);
+        }
+        
+        .content-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .create-post-card {
+            background-color: var(--text-light);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--space-lg);
+            padding: var(--space-lg);
+        }
+        
+        .post-editor {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .editor-input {
+            width: 100%;
+            min-height: 150px;
+            padding: var(--space-md);
+            border: 1px solid var(--gray-light);
+            border-radius: var(--border-radius-md);
+            font-size: var(--font-size-md);
+            margin-bottom: var(--space-md);
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .editor-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .editor-tools {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--space-md);
+            background-color: var(--secondary-light);
+            border-radius: var(--border-radius-md);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .editor-tool {
+            display: flex;
+            align-items: center;
+            color: var(--primary-dark);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: var(--font-size-sm);
+        }
+        
+        .editor-tool i {
+            margin-right: var(--space-xs);
+            font-size: 16px;
+        }
+        
+        .image-preview {
+            width: 100%;
+            margin-bottom: var(--space-md);
+        }
+        
+        .image-preview img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--gray-light);
+        }
+        
+        .remove-image {
+            text-align: right;
+            margin-top: var(--space-xs);
+        }
+        
+        .remove-image button {
+            color: var(--accent-dark);
+            background: none;
+            border: none;
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+        }
+        
+        .post-options {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .option-title {
+            font-weight: 500;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .category-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+        }
+        
+        .category-option {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--text-light);
+            border: 1px solid var(--gray-light);
+            border-radius: 20px;
+            padding: var(--space-xs) var(--space-md);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .category-option.active {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            border-color: var(--primary-color);
+        }
+        
+        .category-option i {
+            margin-right: var(--space-xs);
+        }
+        
+        .privacy-options {
+            display: flex;
+            gap: var(--space-md);
+            margin-bottom: var(--space-md);
+        }
+        
+        .privacy-option {
+            display: flex;
+            align-items: center;
+        }
+        
+        .privacy-option input {
+            margin-right: var(--space-xs);
+        }
+        
+        .add-location {
+            margin-bottom: var(--space-md);
+        }
+        
+        .add-location-btn {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .add-location-btn i {
+            margin-right: var(--space-xs);
+        }
+        
+        .event-details {
+            padding: var(--space-md);
+            border: 1px solid var(--primary-light);
+            border-radius: var(--border-radius-md);
+            background-color: rgba(59, 142, 165, 0.05);
+            margin-top: var(--space-sm);
+            margin-bottom: var(--space-md);
+        }
+        
+        .event-details-title {
+            font-weight: 600;
+            margin-bottom: var(--space-sm);
+            color: var(--primary-dark);
+        }
+        
+        .event-field {
+            margin-bottom: var(--space-sm);
+        }
+        
+        .event-field label {
+            display: block;
+            margin-bottom: var(--space-xs);
+            font-weight: 500;
+            font-size: var(--font-size-sm);
+        }
+        
+        .event-field input, .event-field textarea {
+            width: 100%;
+            padding: var(--space-sm);
+            border: 1px solid var(--gray-light);
+            border-radius: var(--border-radius-sm);
+        }
+        
+        .event-controls {
+            text-align: right;
+            margin-top: var(--space-sm);
+        }
+        
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--space-lg);
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--gray-light);
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            color: var(--gray-dark);
+            text-decoration: none;
+            margin-bottom: var(--space-md);
+            font-weight: 500;
+        }
+        
+        .back-btn i {
+            margin-right: var(--space-xs);
+        }
+        
+        .back-btn:hover {
+            color: var(--primary-color);
+        }
+        
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--text-light);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        
+        .mobile-nav-menu {
+            display: flex;
+            justify-content: space-around;
+            padding: var(--space-sm) 0;
+        }
+        
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--gray-dark);
+        }
+        
+        .mobile-nav-item.active {
+            color: var(--primary-color);
+        }
+        
+        .mobile-nav-item i {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        
+        .mobile-nav-label {
+            font-size: var(--font-size-xs);
+        }
+        
+        .preview-container {
+            margin-top: var(--space-lg);
+            padding: var(--space-md);
+            border: 1px dashed var(--primary-color);
+            border-radius: var(--border-radius-md);
+            background-color: rgba(59, 142, 165, 0.05);
+        }
+        
+        .preview-title {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: var(--space-md);
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding-bottom: 70px;
+            }
+            
+            .mobile-nav {
+                display: block;
+            }
+            
+            .editor-tools {
+                flex-wrap: wrap;
+            }
+            
+            .editor-tool {
+                margin-bottom: var(--space-sm);
+                flex: 0 0 48%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar izquierdo -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="../Imagenes/comunidadActivaIsotipo.png" alt="ComunidadActiva" style="max-width: 40px; margin-right: 10px;">
+            <span style="font-weight: 700; font-size: var(--font-size-lg); color: var(--primary-dark);">ComunidadActiva</span>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li class="sidebar-item">
+                <a href="feed.html" class="sidebar-link">
+                    <i class="fas fa-home"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="perfil.html" class="sidebar-link">
+                    <i class="fas fa-user"></i>
+                    <span>Mi Perfil</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="mensajeria.html" class="sidebar-link">
+                    <i class="fas fa-comment"></i>
+                    <span>Mensajes</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="grupos.html" class="sidebar-link">
+                    <i class="fas fa-users"></i>
+                    <span>Grupos</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="alertas.html" class="sidebar-link">
+                    <i class="fas fa-bell"></i>
+                    <span>Alertas</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="calendario.html" class="sidebar-link">
+                    <i class="far fa-calendar"></i>
+                    <span>Calendario</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="mapa.html" class="sidebar-link">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Mapa</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="encuestas.html" class="sidebar-link">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Encuestas</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="actividades.html" class="sidebar-link">
+                    <i class="fas fa-child"></i>
+                    <span>Actividades Infantiles</span>
+                </a>
+            </li>
+        </ul>
+        
+        <div style="margin-top: auto; padding-top: var(--space-xl);">
+            <a href="../index.html" class="sidebar-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <div class="content-wrapper">
+            <a href="feed.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Volver al feed
+            </a>
+            
+            <h2 class="mb-3">Crear nueva publicación</h2>
+            
+            <div class="create-post-card">
+                <div class="post-editor">
+                    <textarea class="editor-input" placeholder="¿Qué quieres compartir con tus vecinos hoy?"></textarea>
+                    
+                    <div class="image-preview" style="display: block;">
+                        <div style="height: 200px; background-color: var(--primary-light); border-radius: var(--border-radius-sm); display: flex; align-items: center; justify-content: center; color: white;">
+                            <i class="fas fa-utensils" style="font-size: 48px;"></i>
+                        </div>
+                        <div class="remove-image">
+                            <button><i class="fas fa-times"></i> Eliminar imagen</button>
+                        </div>
+                    </div>
+                    
+                    <div class="editor-tools">
+                        <div class="editor-tool">
+                            <i class="fas fa-image"></i>
+                            <span>Foto/Video</span>
+                        </div>
+                        <div class="editor-tool">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Ubicación</span>
+                        </div>
+                        <div class="editor-tool">
+                            <i class="far fa-calendar-alt"></i>
+                            <span>Evento</span>
+                        </div>
+                        <div class="editor-tool">
+                            <i class="fas fa-poll"></i>
+                            <span>Encuesta</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="post-options">
+                    <div class="option-section">
+                        <div class="option-title">Categoría</div>
+                        <div class="category-options">
+                            <div class="category-option active">
+                                <i class="fas fa-comment"></i> General
+                            </div>
+                            <div class="category-option">
+                                <i class="fas fa-bullhorn"></i> Anuncios
+                            </div>
+                            <div class="category-option">
+                                <i class="far fa-calendar-check"></i> Eventos
+                            </div>
+                            <div class="category-option">
+                                <i class="fas fa-shield-alt"></i> Seguridad
+                            </div>
+                            <div class="category-option">
+                                <i class="fas fa-paw"></i> Mascotas
+                            </div>
+                            <div class="category-option">
+                                <i class="fas fa-running"></i> Deportes
+                            </div>
+                            <div class="category-option">
+                                <i class="fas fa-child"></i> Niños
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="option-section">
+                        <div class="option-title">Privacidad</div>
+                        <div class="privacy-options">
+                            <div class="privacy-option">
+                                <input type="radio" id="public" name="privacy" checked>
+                                <label for="public">Público (todos los vecinos)</label>
+                            </div>
+                            <div class="privacy-option">
+                                <input type="radio" id="neighbors" name="privacy">
+                                <label for="neighbors">Solo mi edificio</label>
+                            </div>
+                            <div class="privacy-option">
+                                <input type="radio" id="custom" name="privacy">
+                                <label for="custom">Personalizado</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="option-section">
+                        <div class="add-location">
+                            <div class="add-location-btn">
+                                <i class="fas fa-map-marker-alt"></i> Agregar ubicación
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Detalles del evento (visible al hacer clic en "Evento") -->
+                    <div class="event-details">
+                        <div class="event-details-title">Detalles del evento</div>
+                        
+                        <div class="event-field">
+                            <label for="event-title">Título del evento</label>
+                            <input type="text" id="event-title" value="Parrillada en casa">
+                        </div>
+                        
+                        <div class="event-field">
+                            <label for="event-date">Fecha</label>
+                            <input type="date" id="event-date" value="2025-05-25">
+                        </div>
+                        
+                        <div class="event-field">
+                            <label for="event-time-start">Hora de inicio</label>
+                            <input type="time" id="event-time-start" value="13:00">
+                        </div>
+                        
+                        <div class="event-field">
+                            <label for="event-time-end">Hora de finalización</label>
+                            <input type="time" id="event-time-end" value="19:00">
+                        </div>
+                        
+                        <div class="event-field">
+                            <label for="event-location">Ubicación</label>
+                            <input type="text" id="event-location" value="Mi casa, Sector Norte, Casa 23">
+                        </div>
+                        
+                        <div class="event-field">
+                            <label for="event-description">Descripción</label>
+                            <textarea id="event-description" rows="3">Traigan algo para tomar o algún postre si quieren. ¡Va a estar buenísimo!</textarea>
+                        </div>
+                        
+                        <div class="event-controls">
+                            <button class="btn btn-secondary">Cancelar evento</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Contenedor de vista previa -->
+                    <div class="preview-container">
+                        <div class="preview-title">Así va a verse tu publicación</div>
+                        <div class="post">
+                            <div class="post-header">
+                                <div class="post-meta">
+                                    <div class="post-author">Carlos García <span class="post-tag">Eventos</span></div>
+                                    <div class="post-time">Ahora · <i class="fas fa-globe"></i> Público</div>
+                                </div>
+                            </div>
+                            
+                            <div class="post-content">
+                                <div class="post-text">
+                                    <p>Vecinos del barrio! Les cuento que este finde hago una parrillada en casa. Si escuchan música, ya saben por qué es 🍖🎵 Terminamos temprano, no se preocupen!</p>
+                                    
+                                    <p style="background-color: var(--secondary-light); padding: var(--space-sm); border-radius: var(--border-radius-sm); margin-top: var(--space-sm);">
+                                        <strong>Cuándo:</strong> Sábado 25 de mayo, a eso de la 1 de la tarde<br>
+                                        <strong>Dónde:</strong> Mi casa, Sector Norte, Casa 23
+                                    </p>
+                                </div>
+                                <div style="height: 150px; background-color: var(--primary-light); border-radius: var(--border-radius-sm); display: flex; align-items: center; justify-content: center; color: white;">
+                                    <i class="fas fa-utensils" style="font-size: 48px;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="post-actions">
+                    <button class="btn btn-secondary">Guardar borrador</button>
+                    <div>
+                        <button class="btn btn-primary">Publicar ahora</button>
+                        <button class="btn btn-secondary" style="margin-left: var(--space-sm);"><i class="fas fa-chevron-down"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navegación móvil -->
+    <div class="mobile-nav">
+        <div class="mobile-nav-menu">
+            <a href="feed.html" class="mobile-nav-item">
+                <i class="fas fa-home"></i>
+                <span class="mobile-nav-label">Inicio</span>
+            </a>
+            <a href="grupos.html" class="mobile-nav-item">
+                <i class="fas fa-users"></i>
+                <span class="mobile-nav-label">Grupos</span>
+            </a>
+            <a href="crear-publicacion.html" class="mobile-nav-item active">
+                <i class="fas fa-plus-circle"></i>
+                <span class="mobile-nav-label">Publicar</span>
+            </a>
+            <a href="alertas.html" class="mobile-nav-item">
+                <i class="fas fa-bell"></i>
+                <span class="mobile-nav-label">Alertas</span>
+            </a>
+            <a href="perfil.html" class="mobile-nav-item">
+                <i class="fas fa-user"></i>
+                <span class="mobile-nav-label">Perfil</span>
+            </a>
+        </div>
+    </div>
+    
+    <script src="../js/main.js"></script>
+</body>
+</html> 

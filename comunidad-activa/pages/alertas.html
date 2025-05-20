@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Alertas - ComunidadActiva</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .alertas-container {
+            padding: var(--space-lg) 0;
+        }
+        
+        .alertas-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .alertas-grid {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+        
+        .alerta-item {
+            background-color: var(--text-light);
+            border-radius: var(--border-radius-md);
+            padding: var(--space-md);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            transition: transform 0.2s ease;
+        }
+        
+        .alerta-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .alerta-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        
+        .alerta-info {
+            flex: 1;
+        }
+        
+        .alerta-titulo {
+            font-weight: 600;
+            font-size: var(--font-size-lg);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .alerta-descripcion {
+            margin-bottom: var(--space-xs);
+            color: var(--gray-dark);
+        }
+        
+        .alerta-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: var(--font-size-sm);
+            color: var(--gray-medium);
+        }
+        
+        .alerta-acciones {
+            display: flex;
+            gap: var(--space-sm);
+        }
+        
+        .btn-alerta {
+            background: none;
+            border: none;
+            color: var(--gray-dark);
+            cursor: pointer;
+            transition: color 0.2s ease;
+            font-size: 20px;
+        }
+        
+        .btn-alerta:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Tipos de alerta */
+        .alerta-emergencia .alerta-icon {
+            background-color: var(--accent-color);
+            color: var(--text-light);
+        }
+        
+        .alerta-seguridad .alerta-icon {
+            background-color: #E74C3C;
+            color: var(--text-light);
+        }
+        
+        .alerta-servicio .alerta-icon {
+            background-color: #F39C12;
+            color: var(--text-light);
+        }
+        
+        .alerta-informativa .alerta-icon {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+        }
+        
+        .alerta-comunidad .alerta-icon {
+            background-color: #27AE60;
+            color: var(--text-light);
+        }
+        
+        /* Filtros */
+        .alertas-filtros {
+            display: flex;
+            margin-bottom: var(--space-lg);
+            gap: var(--space-sm);
+            overflow-x: auto;
+            padding-bottom: var(--space-sm);
+        }
+        
+        .filtro-btn {
+            background-color: var(--text-light);
+            border: 1px solid var(--gray-light);
+            border-radius: 20px;
+            padding: 4px 15px;
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        
+        .filtro-btn:hover, .filtro-btn.active {
+            background-color: var(--primary-light);
+            border-color: var(--primary-light);
+            color: var(--text-light);
+        }
+        
+        .crear-alerta-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background-color: var(--text-light);
+            border-radius: var(--border-radius-md);
+            padding: var(--space-lg);
+            width: 100%;
+            max-width: 500px;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .alerta-badge {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--secondary-light);
+            color: var(--primary-dark);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: var(--font-size-xs);
+            margin-right: var(--space-xs);
+        }
+        
+        .btn-responder {
+            background-color: var(--primary-light);
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .alerta-separator {
+            height: 1px;
+            background-color: var(--gray-light);
+            margin: var(--space-md) 0;
+        }
+        
+        .alerta-respuestas {
+            margin-top: var(--space-sm);
+            font-size: var(--font-size-sm);
+        }
+        
+        .sin-alertas {
+            text-align: center;
+            padding: var(--space-xl) 0;
+            color: var(--gray-medium);
+        }
+        
+        .sin-alertas i {
+            font-size: 48px;
+            margin-bottom: var(--space-md);
+            color: var(--gray-light);
+        }
+        
+        /* Diseño responsive */
+        @media (max-width: 768px) {
+            .alerta-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .alerta-acciones {
+                width: 100%;
+                justify-content: flex-end;
+                margin-top: var(--space-sm);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="feed.html" class="navbar-logo">
+                <img src="../Imagenes/comunidadActivaIsotipo.png" alt="ComunidadActiva" style="height: 30px; vertical-align: middle;"> ComunidadActiva
+            </a>
+            <ul class="navbar-menu">
+                <li class="navbar-item"><a href="feed.html" class="navbar-link"><i class="fas fa-home"></i> Inicio</a></li>
+                <li class="navbar-item"><a href="mensajeria.html" class="navbar-link"><i class="fas fa-envelope"></i> Mensajes</a></li>
+                <li class="navbar-item"><a href="perfil.html" class="navbar-link"><i class="fas fa-user"></i> Perfil</a></li>
+                <li class="navbar-item"><a href="notificaciones.html" class="navbar-link"><i class="fas fa-bell"></i> Notificaciones</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Contenido principal -->
+    <div class="container">
+        <div class="alertas-container">
+            <div class="alertas-header">
+                <h2>Sistema de Alertas</h2>
+                <button class="btn btn-primary" id="btnCrearAlerta"><i class="fas fa-exclamation-triangle"></i> Crear Alerta</button>
+            </div>
+            
+            <!-- Filtros de alertas -->
+            <div class="alertas-filtros">
+                <button class="filtro-btn active"><i class="fas fa-filter"></i> Todas las alertas</button>
+                <button class="filtro-btn"><i class="fas fa-exclamation-circle"></i> Emergencias</button>
+                <button class="filtro-btn"><i class="fas fa-shield-alt"></i> Seguridad</button>
+                <button class="filtro-btn"><i class="fas fa-wrench"></i> Servicios</button>
+                <button class="filtro-btn"><i class="fas fa-info-circle"></i> Informativas</button>
+                <button class="filtro-btn"><i class="fas fa-users"></i> Comunidad</button>
+                <button class="filtro-btn"><i class="fas fa-clock"></i> Último día</button>
+                <button class="filtro-btn"><i class="fas fa-calendar-week"></i> Última semana</button>
+            </div>
+            
+            <!-- Lista de alertas -->
+            <div class="alertas-grid">
+                <!-- Alerta de emergencia -->
+                <div class="alerta-item alerta-emergencia">
+                    <div class="alerta-icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="alerta-info">
+                        <div class="alerta-titulo">Corte de luz programado</div>
+                        <div class="alerta-descripcion">Mañana habrá un corte de luz desde las 10:00 hasta las 14:00 para trabajos de mantenimiento en la red eléctrica.</div>
+                        <div class="alerta-meta">
+                            <div>
+                                <span class="alerta-badge"><i class="fas fa-wrench"></i> Servicios</span>
+                                <span>Por: Administración</span>
+                            </div>
+                            <div>
+                                <i class="far fa-clock"></i> Hoy, 15:30
+                            </div>
+                        </div>
+                        <div class="alerta-separator"></div>
+                        <div class="alerta-respuestas">
+                            <div><i class="fas fa-comment-alt"></i> 8 respuestas • <i class="fas fa-eye"></i> 64 vistas</div>
+                        </div>
+                    </div>
+                    <div class="alerta-acciones">
+                        <button class="btn-responder"><i class="fas fa-reply"></i> Responder</button>
+                        <button class="btn-alerta"><i class="far fa-bookmark"></i></button>
+                        <button class="btn-alerta"><i class="fas fa-share-alt"></i></button>
+                    </div>
+                </div>
+                
+                <!-- Alerta de seguridad -->
+                <div class="alerta-item alerta-seguridad">
+                    <div class="alerta-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="alerta-info">
+                        <div class="alerta-titulo">Vehículo sospechoso en el sector norte</div>
+                        <div class="alerta-descripcion">Se ha observado un vehículo marca Ford, color gris, merodeando por el sector norte. Personal de seguridad ya está realizando rondas adicionales.</div>
+                        <div class="alerta-meta">
+                            <div>
+                                <span class="alerta-badge"><i class="fas fa-shield-alt"></i> Seguridad</span>
+                                <span>Por: Carlos López (Seguridad)</span>
+                            </div>
+                            <div>
+                                <i class="far fa-clock"></i> Hoy, 13:15
+                            </div>
+                        </div>
+                        <div class="alerta-separator"></div>
+                        <div class="alerta-respuestas">
+                            <div><i class="fas fa-comment-alt"></i> 12 respuestas • <i class="fas fa-eye"></i> 89 vistas</div>
+                        </div>
+                    </div>
+                    <div class="alerta-acciones">
+                        <button class="btn-responder"><i class="fas fa-reply"></i> Responder</button>
+                        <button class="btn-alerta"><i class="far fa-bookmark"></i></button>
+                        <button class="btn-alerta"><i class="fas fa-share-alt"></i></button>
+                    </div>
+                </div>
+                
+                <!-- Alerta de servicio -->
+                <div class="alerta-item alerta-servicio">
+                    <div class="alerta-icon">
+                        <i class="fas fa-wrench"></i>
+                    </div>
+                    <div class="alerta-info">
+                        <div class="alerta-titulo">Mantenimiento de ascensores</div>
+                        <div class="alerta-descripcion">Este jueves 10 de agosto, el ascensor principal estará fuera de servicio de 9:00 a 12:00 por mantenimiento preventivo programado.</div>
+                        <div class="alerta-meta">
+                            <div>
+                                <span class="alerta-badge"><i class="fas fa-wrench"></i> Servicios</span>
+                                <span>Por: Administración</span>
+                            </div>
+                            <div>
+                                <i class="far fa-clock"></i> Ayer, 18:45
+                            </div>
+                        </div>
+                        <div class="alerta-separator"></div>
+                        <div class="alerta-respuestas">
+                            <div><i class="fas fa-comment-alt"></i> 3 respuestas • <i class="fas fa-eye"></i> 56 vistas</div>
+                        </div>
+                    </div>
+                    <div class="alerta-acciones">
+                        <button class="btn-responder"><i class="fas fa-reply"></i> Responder</button>
+                        <button class="btn-alerta"><i class="far fa-bookmark"></i></button>
+                        <button class="btn-alerta"><i class="fas fa-share-alt"></i></button>
+                    </div>
+                </div>
+                
+                <!-- Alerta informativa -->
+                <div class="alerta-item alerta-informativa">
+                    <div class="alerta-icon">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <div class="alerta-info">
+                        <div class="alerta-titulo">Cambio en horarios de pileta</div>
+                        <div class="alerta-descripcion">A partir del 15 de agosto, la pileta comunitaria estará abierta desde las 8:00 hasta las 22:00 todos los días. Se extendió el horario por la temporada.</div>
+                        <div class="alerta-meta">
+                            <div>
+                                <span class="alerta-badge"><i class="fas fa-info-circle"></i> Informativa</span>
+                                <span>Por: Teresa Giménez (Administración)</span>
+                            </div>
+                            <div>
+                                <i class="far fa-clock"></i> 03/08, 10:23
+                            </div>
+                        </div>
+                        <div class="alerta-separator"></div>
+                        <div class="alerta-respuestas">
+                            <div><i class="fas fa-comment-alt"></i> 5 respuestas • <i class="fas fa-eye"></i> 42 vistas</div>
+                        </div>
+                    </div>
+                    <div class="alerta-acciones">
+                        <button class="btn-responder"><i class="fas fa-reply"></i> Responder</button>
+                        <button class="btn-alerta"><i class="far fa-bookmark"></i></button>
+                        <button class="btn-alerta"><i class="fas fa-share-alt"></i></button>
+                    </div>
+                </div>
+                
+                <!-- Alerta de comunidad -->
+                <div class="alerta-item alerta-comunidad">
+                    <div class="alerta-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="alerta-info">
+                        <div class="alerta-titulo">Campaña de donación de juguetes</div>
+                        <div class="alerta-descripcion">Este domingo 13 de agosto estaremos recolectando juguetes usados en buen estado para donar al Hospital Infantil. Punto de recolección: entrada del SUM.</div>
+                        <div class="alerta-meta">
+                            <div>
+                                <span class="alerta-badge"><i class="fas fa-users"></i> Comunidad</span>
+                                <span>Por: Grupo Solidario</span>
+                            </div>
+                            <div>
+                                <i class="far fa-clock"></i> 02/08, 16:10
+                            </div>
+                        </div>
+                        <div class="alerta-separator"></div>
+                        <div class="alerta-respuestas">
+                            <div><i class="fas fa-comment-alt"></i> 15 respuestas • <i class="fas fa-eye"></i> 78 vistas</div>
+                        </div>
+                    </div>
+                    <div class="alerta-acciones">
+                        <button class="btn-responder"><i class="fas fa-reply"></i> Responder</button>
+                        <button class="btn-alerta"><i class="far fa-bookmark"></i></button>
+                        <button class="btn-alerta"><i class="fas fa-share-alt"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para crear alerta -->
+    <div class="crear-alerta-modal" id="crearAlertaModal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
+                <h3>Crear nueva alerta</h3>
+                <button id="cerrarModal" style="background: none; border: none; font-size: 20px; cursor: pointer;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form>
+                <div class="form-group">
+                    <label for="tituloAlerta" class="form-label">Título de la alerta</label>
+                    <input type="text" id="tituloAlerta" class="form-input" placeholder="Ej. Corte de agua programado" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="descripcionAlerta" class="form-label">Descripción</label>
+                    <textarea id="descripcionAlerta" class="form-input" rows="3" placeholder="Describe los detalles de la alerta..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="tipoAlerta" class="form-label">Tipo de alerta</label>
+                    <select id="tipoAlerta" class="form-input" required>
+                        <option value="">Seleccionar tipo</option>
+                        <option value="emergencia">Emergencia</option>
+                        <option value="seguridad">Seguridad</option>
+                        <option value="servicio">Servicio</option>
+                        <option value="informativa">Informativa</option>
+                        <option value="comunidad">Comunidad</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="adjuntoAlerta" class="form-label">Adjuntar archivos (opcional)</label>
+                    <input type="file" id="adjuntoAlerta" class="form-input">
+                </div>
+                
+                <div class="form-group">
+                    <div style="display: flex; align-items: center;">
+                        <input type="checkbox" id="notificarTodos" style="margin-right: var(--space-xs);">
+                        <label for="notificarTodos">Enviar notificación a todos los vecinos</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div style="display: flex; align-items: center;">
+                        <input type="checkbox" id="mostrarMapa" style="margin-right: var(--space-xs);">
+                        <label for="mostrarMapa">Mostrar ubicación en mapa</label>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: flex-end; gap: var(--space-sm); margin-top: var(--space-lg);">
+                    <button type="button" class="btn btn-secondary" id="cancelarCrearAlerta">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Publicar alerta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Modal de crear alerta
+        const modal = document.getElementById('crearAlertaModal');
+        const btnCrearAlerta = document.getElementById('btnCrearAlerta');
+        const cerrarModal = document.getElementById('cerrarModal');
+        const cancelarCrearAlerta = document.getElementById('cancelarCrearAlerta');
+        
+        btnCrearAlerta.addEventListener('click', function() {
+            modal.style.display = 'flex';
+        });
+        
+        cerrarModal.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+        
+        cancelarCrearAlerta.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+        
+        // Cerrar modal al hacer clic fuera
+        window.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+        
+        // Filtros
+        const filtros = document.querySelectorAll('.filtro-btn');
+        filtros.forEach(filtro => {
+            filtro.addEventListener('click', function() {
+                filtros.forEach(f => f.classList.remove('active'));
+                this.classList.add('active');
+                // Aquí iría la lógica para filtrar las alertas
+            });
+        });
+    </script>
+</body>
+</html> 
