@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Grupo - ComunidadActiva</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .grupo-header {
+            position: relative;
+            background-color: var(--primary-light);
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            margin-bottom: 70px;
+            border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .grupo-info {
+            width: 100%;
+            padding: var(--space-lg);
+            color: white;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
+        }
+        
+        .grupo-avatar {
+            position: absolute;
+            bottom: -50px;
+            left: var(--space-lg);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid white;
+            background-color: var(--gray-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .grupo-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .grupo-content {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: var(--space-lg);
+        }
+        
+        .grupo-main {
+            background-color: var(--text-light);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+        
+        .grupo-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+        
+        .grupo-nav {
+            display: flex;
+            border-bottom: 1px solid var(--gray-light);
+            margin-bottom: var(--space-md);
+        }
+        
+        .grupo-nav-item {
+            padding: var(--space-md) var(--space-lg);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+        }
+        
+        .grupo-nav-item.active {
+            border-bottom: 3px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .grupo-card {
+            background-color: var(--text-light);
+            border-radius: var(--border-radius-md);
+            padding: var(--space-md);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .publicacion {
+            border-bottom: 1px solid var(--gray-light);
+            padding: var(--space-lg);
+        }
+        
+        .publicacion:last-child {
+            border-bottom: none;
+        }
+        
+        .publicacion-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--space-md);
+        }
+        
+        .publicacion-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: var(--space-md);
+        }
+        
+        .publicacion-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .publicacion-meta {
+            flex: 1;
+        }
+        
+        .publicacion-autor {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+        
+        .publicacion-fecha {
+            font-size: var(--font-size-xs);
+            color: var(--gray-medium);
+        }
+        
+        .publicacion-content {
+            margin-bottom: var(--space-md);
+        }
+        
+        .publicacion-actions {
+            display: flex;
+            gap: var(--space-lg);
+            margin-top: var(--space-md);
+            padding-top: var(--space-sm);
+            border-top: 1px solid var(--gray-light);
+        }
+        
+        .publicacion-action {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            color: var(--gray-dark);
+            cursor: pointer;
+        }
+        
+        .publicacion-action:hover {
+            color: var(--primary-color);
+        }
+        
+        .miembros-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-sm);
+        }
+        
+        .miembro-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-size: var(--font-size-sm);
+        }
+        
+        .miembro-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        
+        .miembro-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        @media (max-width: 768px) {
+            .grupo-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .grupo-header {
+                margin-bottom: 60px;
+            }
+            
+            .grupo-avatar {
+                width: 80px;
+                height: 80px;
+                bottom: -40px;
+            }
+            
+            .publicacion-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .publicacion-avatar {
+                margin-right: 0;
+                margin-bottom: var(--space-sm);
+            }
+            
+            .miembros-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="feed.html" class="navbar-logo">
+                <img src="../Imagenes/comunidadActivaIsotipo.png" alt="ComunidadActiva" style="height: 30px; vertical-align: middle;"> ComunidadActiva
+            </a>
+            <ul class="navbar-menu">
+                <li class="navbar-item"><a href="feed.html" class="navbar-link"><i class="fas fa-home"></i> Inicio</a></li>
+                <li class="navbar-item"><a href="mensajeria.html" class="navbar-link"><i class="fas fa-envelope"></i> Mensajes</a></li>
+                <li class="navbar-item"><a href="perfil.html" class="navbar-link"><i class="fas fa-user"></i> Perfil</a></li>
+                <li class="navbar-item"><a href="notificaciones.html" class="navbar-link"><i class="fas fa-bell"></i> Notificaciones</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Contenido principal -->
+    <div class="container">
+        <div style="margin-bottom: var(--space-md);">
+            <a href="grupos.html" class="btn btn-text"><i class="fas fa-arrow-left"></i> Volver a grupos</a>
+        </div>
+        
+        <div class="grupo-header" style="background-image: url('../Imagenes/fondo-grupo.jpg');">
+            <div class="grupo-info">
+                <h1>Club de Running del Barrio</h1>
+                <div style="display: flex; gap: var(--space-md); align-items: center;">
+                    <span><i class="fas fa-users"></i> 34 miembros</span>
+                    <span><i class="fas fa-shield-alt"></i> Grupo Público</span>
+                </div>
+            </div>
+            <div class="grupo-avatar">
+                <img src="../Imagenes/avatarUsuario.png" alt="Logo del grupo">
+            </div>
+        </div>
+        
+        <div style="padding-left: calc(var(--space-lg) + 100px); margin-bottom: var(--space-lg); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <span class="grupo-tag">Deportes</span>
+                <span class="grupo-tag">Running</span>
+                <span class="grupo-tag">Salud</span>
+            </div>
+            <div>
+                <button class="btn btn-primary"><i class="fas fa-user-plus"></i> Ya eres miembro</button>
+            </div>
+        </div>
+        
+        <div class="grupo-content">
+            <div class="grupo-main">
+                <div class="grupo-nav">
+                    <div class="grupo-nav-item active">Publicaciones</div>
+                    <div class="grupo-nav-item">Eventos</div>
+                    <div class="grupo-nav-item">Miembros</div>
+                    <div class="grupo-nav-item">Fotos</div>
+                    <div class="grupo-nav-item">Archivos</div>
+                </div>
+                
+                <div style="padding: var(--space-lg);">
+                    <!-- Crear publicación -->
+                    <div class="create-post" style="margin-bottom: var(--space-lg);">
+                        <div class="user-avatar">
+                            <img src="../Imagenes/avatarUsuario.png" alt="User Avatar">
+                        </div>
+                        <div class="create-post-input">
+                            ¿Qué quieres compartir con el grupo?
+                        </div>
+                    </div>
+                    
+                    <!-- Publicaciones -->
+                    <div class="publicaciones">
+                        <div class="publicacion">
+                            <div class="publicacion-header">
+                                <div class="publicacion-avatar">
+                                    <img src="../Imagenes/avatarUsuario.png" alt="Martín González">
+                                </div>
+                                <div class="publicacion-meta">
+                                    <div class="publicacion-autor">Martín González <span style="color: var(--primary-color); font-size: var(--font-size-xs);">Admin</span></div>
+                                    <div class="publicacion-fecha">Ayer a las 18:30</div>
+                                </div>
+                                <div class="post-options">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </div>
+                            </div>
+                            <div class="publicacion-content">
+                                <p>¡Atención corredores! Organizamos una salida grupal este sábado para participar en la carrera solidaria que se hace en el Parque Central. Nos encontramos a las 8:00 en la entrada principal del barrio.</p>
+                                <p>Distancias: 5K, 10K y 21K</p>
+                                <p>¡Los esperamos! 🏃‍♂️🏃‍♀️</p>
+                                <div style="height: 200px; background-color: var(--secondary-light); border-radius: var(--border-radius-sm); margin-top: var(--space-md); display: flex; align-items: center; justify-content: center; font-size: 32px;">
+                                    <i class="fas fa-running"></i>
+                                </div>
+                            </div>
+                            <div class="publicacion-actions">
+                                <div class="publicacion-action">
+                                    <i class="far fa-thumbs-up"></i> Me gusta (12)
+                                </div>
+                                <div class="publicacion-action">
+                                    <i class="far fa-comment"></i> Comentar (3)
+                                </div>
+                                <div class="publicacion-action">
+                                    <i class="far fa-share-square"></i> Compartir
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="publicacion">
+                            <div class="publicacion-header">
+                                <div class="publicacion-avatar">
+                                    <img src="../Imagenes/avatarUsuario.png" alt="Ana Torres">
+                                </div>
+                                <div class="publicacion-meta">
+                                    <div class="publicacion-autor">Ana Torres</div>
+                                    <div class="publicacion-fecha">Hace 2 días</div>
+                                </div>
+                                <div class="post-options">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </div>
+                            </div>
+                            <div class="publicacion-content">
+                                <p>Comparto con ustedes mi progreso después de 3 meses corriendo con el grupo. ¡Bajé 10 minutos mi tiempo en 10K! Gracias a todos por la motivación 💪</p>
+                            </div>
+                            <div class="publicacion-actions">
+                                <div class="publicacion-action">
+                                    <i class="far fa-thumbs-up"></i> Me gusta (24)
+                                </div>
+                                <div class="publicacion-action">
+                                    <i class="far fa-comment"></i> Comentar (7)
+                                </div>
+                                <div class="publicacion-action">
+                                    <i class="far fa-share-square"></i> Compartir
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grupo-sidebar">
+                <div class="grupo-card">
+                    <h3 style="margin-bottom: var(--space-md);">Sobre este grupo</h3>
+                    <p style="margin-bottom: var(--space-md);">Grupo para vecinos aficionados al running de todos los niveles. Organizamos salidas grupales, compartimos consejos y motivación para mantenernos activos.</p>
+                    <div style="color: var(--gray-dark); font-size: var(--font-size-sm);">
+                        <div style="margin-bottom: var(--space-xs);"><i class="fas fa-calendar-alt"></i> Creado en enero 2023</div>
+                        <div><i class="fas fa-user-shield"></i> Administrado por Martín González</div>
+                    </div>
+                </div>
+                
+                <div class="grupo-card">
+                    <h3 style="margin-bottom: var(--space-md);">Próximo evento</h3>
+                    <div style="background-color: var(--secondary-light); padding: var(--space-md); border-radius: var(--border-radius-sm); margin-bottom: var(--space-md);">
+                        <div style="font-weight: 500; margin-bottom: var(--space-xs);">Carrera Solidaria 10K</div>
+                        <div style="margin-bottom: var(--space-xs); font-size: var(--font-size-sm);"><i class="far fa-calendar"></i> Sábado 12 de agosto, 9:00</div>
+                        <div style="margin-bottom: var(--space-xs); font-size: var(--font-size-sm);"><i class="fas fa-map-marker-alt"></i> Parque Central</div>
+                        <div style="font-size: var(--font-size-sm);"><i class="fas fa-user-friends"></i> 15 asistentes confirmados</div>
+                    </div>
+                    <a href="#" class="btn btn-sm btn-secondary" style="width: 100%;">Ver todos los eventos</a>
+                </div>
+                
+                <div class="grupo-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
+                        <h3 style="margin: 0;">Miembros (34)</h3>
+                        <a href="#" class="btn btn-text btn-sm">Ver todos</a>
+                    </div>
+                    <div class="miembros-grid">
+                        <div class="miembro-item">
+                            <div class="miembro-avatar">
+                                <img src="../Imagenes/avatarUsuario.png" alt="Martín">
+                            </div>
+                            <div>Martín</div>
+                        </div>
+                        <div class="miembro-item">
+                            <div class="miembro-avatar">
+                                <img src="../Imagenes/avatarUsuario.png" alt="Ana">
+                            </div>
+                            <div>Ana</div>
+                        </div>
+                        <div class="miembro-item">
+                            <div class="miembro-avatar">
+                                <img src="../Imagenes/avatarUsuario.png" alt="Carlos">
+                            </div>
+                            <div>Carlos</div>
+                        </div>
+                        <div class="miembro-item">
+                            <div class="miembro-avatar">
+                                <img src="../Imagenes/avatarUsuario.png" alt="Laura">
+                            </div>
+                            <div>Laura</div>
+                        </div>
+                        <div class="miembro-item">
+                            <div class="miembro-avatar">
+                                <img src="../Imagenes/avatarUsuario.png" alt="Pedro">
+                            </div>
+                            <div>Pedro</div>
+                        </div>
+                        <div class="miembro-item">
+                            <div class="miembro-avatar">
+                                <img src="../Imagenes/avatarUsuario.png" alt="Sofía">
+                            </div>
+                            <div>Sofía</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grupo-card">
+                    <h3 style="margin-bottom: var(--space-md);">Fotos recientes</h3>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-xs); margin-bottom: var(--space-md);">
+                        <div style="height: 80px; background-color: var(--gray-light); border-radius: var(--border-radius-sm);"></div>
+                        <div style="height: 80px; background-color: var(--gray-light); border-radius: var(--border-radius-sm);"></div>
+                        <div style="height: 80px; background-color: var(--gray-light); border-radius: var(--border-radius-sm);"></div>
+                        <div style="height: 80px; background-color: var(--gray-light); border-radius: var(--border-radius-sm);"></div>
+                        <div style="height: 80px; background-color: var(--gray-light); border-radius: var(--border-radius-sm);"></div>
+                        <div style="height: 80px; background-color: var(--gray-light); border-radius: var(--border-radius-sm);"></div>
+                    </div>
+                    <a href="#" class="btn btn-sm btn-text" style="width: 100%;">Ver todas las fotos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navegación móvil -->
+    <div class="mobile-nav">
+        <div class="mobile-nav-menu">
+            <a href="feed.html" class="mobile-nav-item">
+                <i class="fas fa-home"></i>
+                <span class="mobile-nav-label">Inicio</span>
+            </a>
+            <a href="mensajeria.html" class="mobile-nav-item">
+                <i class="fas fa-envelope"></i>
+                <span class="mobile-nav-label">Mensajes</span>
+            </a>
+            <a href="alertas.html" class="mobile-nav-item">
+                <i class="fas fa-bell"></i>
+                <span class="mobile-nav-label">Alertas</span>
+            </a>
+            <a href="grupos.html" class="mobile-nav-item active">
+                <i class="fas fa-users"></i>
+                <span class="mobile-nav-label">Grupos</span>
+            </a>
+            <a href="perfil.html" class="mobile-nav-item">
+                <i class="fas fa-user"></i>
+                <span class="mobile-nav-label">Perfil</span>
+            </a>
+        </div>
+    </div>
+    
+    <script src="../js/main.js"></script>
+</body>
+</html> 

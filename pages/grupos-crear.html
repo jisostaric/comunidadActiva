@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Grupo - ComunidadActiva</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .crear-grupo-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--text-light);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-xl);
+            margin-top: var(--space-xl);
+            margin-bottom: var(--space-xl);
+        }
+        
+        .form-section {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .form-section-title {
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+            padding-bottom: var(--space-sm);
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .preview-image {
+            width: 100%;
+            height: 200px;
+            background-color: var(--gray-light);
+            border-radius: var(--border-radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-dark);
+            margin-bottom: var(--space-sm);
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .privacy-option {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: var(--space-md);
+            padding: var(--space-md);
+            border: 1px solid var(--gray-light);
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+        }
+        
+        .privacy-option.selected {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light-transparent);
+        }
+        
+        .privacy-radio {
+            margin-right: var(--space-sm);
+            margin-top: 3px;
+        }
+        
+        .privacy-content {
+            flex: 1;
+        }
+        
+        .privacy-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .privacy-description {
+            font-size: var(--font-size-sm);
+            color: var(--gray-dark);
+        }
+        
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-xs);
+            margin-top: var(--space-xs);
+        }
+        
+        .tag {
+            background-color: var(--secondary-light);
+            color: var(--primary-dark);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: var(--font-size-xs);
+            display: flex;
+            align-items: center;
+        }
+        
+        .tag i {
+            margin-left: var(--space-xs);
+            cursor: pointer;
+        }
+        
+        .tag-input {
+            display: flex;
+        }
+        
+        .actions-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--space-md);
+            margin-top: var(--space-xl);
+        }
+        
+        @media (max-width: 768px) {
+            .crear-grupo-container {
+                padding: var(--space-md);
+                margin-top: var(--space-md);
+                margin-bottom: var(--space-md);
+            }
+            
+            .actions-container {
+                flex-direction: column;
+            }
+            
+            .actions-container .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="feed.html" class="navbar-logo">
+                <img src="../Imagenes/comunidadActivaIsotipo.png" alt="ComunidadActiva" style="height: 30px; vertical-align: middle;"> ComunidadActiva
+            </a>
+            <ul class="navbar-menu">
+                <li class="navbar-item"><a href="feed.html" class="navbar-link"><i class="fas fa-home"></i> Inicio</a></li>
+                <li class="navbar-item"><a href="mensajeria.html" class="navbar-link"><i class="fas fa-envelope"></i> Mensajes</a></li>
+                <li class="navbar-item"><a href="perfil.html" class="navbar-link"><i class="fas fa-user"></i> Perfil</a></li>
+                <li class="navbar-item"><a href="notificaciones.html" class="navbar-link"><i class="fas fa-bell"></i> Notificaciones</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Contenido principal -->
+    <div class="container">
+        <div class="crear-grupo-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
+                <h2>Crear nuevo grupo</h2>
+                <a href="grupos.html" class="btn btn-text"><i class="fas fa-times"></i> Cancelar</a>
+            </div>
+            
+            <form action="grupos.html">
+                <div class="form-section">
+                    <h3 class="form-section-title">Información básica</h3>
+                    
+                    <div class="form-group">
+                        <label for="nombreGrupo" class="form-label">Nombre del grupo*</label>
+                        <input type="text" id="nombreGrupo" class="form-input" placeholder="Ej. Club de Lectura del Barrio" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descripcionGrupo" class="form-label">Descripción*</label>
+                        <textarea id="descripcionGrupo" class="form-input" rows="3" placeholder="Describe el propósito del grupo..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="categoriaGrupo" class="form-label">Categoría*</label>
+                        <select id="categoriaGrupo" class="form-input" required>
+                            <option value="">Seleccionar categoría</option>
+                            <option value="deportes">Deportes y actividad física</option>
+                            <option value="cultura">Arte y cultura</option>
+                            <option value="bienestar">Salud y bienestar</option>
+                            <option value="mascotas">Mascotas</option>
+                            <option value="hobies">Pasatiempos</option>
+                            <option value="padres">Padres</option>
+                            <option value="vecinos">Vecinos</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3 class="form-section-title">Imagen del grupo</h3>
+                    
+                    <div class="preview-image">
+                        <i class="fas fa-image" style="font-size: 48px;"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="imagenGrupo" class="form-label">Cargar imagen</label>
+                        <input type="file" id="imagenGrupo" class="form-input" accept="image/*">
+                        <div class="form-text">La imagen debe ser de al menos 800x400 píxeles. Formatos: JPG, PNG.</div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3 class="form-section-title">Privacidad</h3>
+                    
+                    <div class="privacy-option selected">
+                        <input type="radio" name="privacy" id="privacy-public" class="privacy-radio" checked>
+                        <div class="privacy-content">
+                            <div class="privacy-title">Público</div>
+                            <div class="privacy-description">Cualquier miembro de la comunidad puede ver el contenido del grupo y unirse libremente.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="privacy-option">
+                        <input type="radio" name="privacy" id="privacy-restricted" class="privacy-radio">
+                        <div class="privacy-content">
+                            <div class="privacy-title">Restringido</div>
+                            <div class="privacy-description">Cualquier miembro puede ver el contenido, pero deben solicitar unirse al grupo.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="privacy-option">
+                        <input type="radio" name="privacy" id="privacy-private" class="privacy-radio">
+                        <div class="privacy-content">
+                            <div class="privacy-title">Privado</div>
+                            <div class="privacy-description">Solo los miembros pueden ver el contenido del grupo. Se requiere invitación para unirse.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3 class="form-section-title">Etiquetas</h3>
+                    
+                    <div class="form-group">
+                        <label for="etiquetasGrupo" class="form-label">Añadir etiquetas</label>
+                        <div class="tag-input">
+                            <input type="text" id="etiquetasGrupo" class="form-input" placeholder="Escribe etiquetas y presiona Enter">
+                            <button type="button" class="btn btn-text"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <div class="form-text">Las etiquetas ayudan a otros vecinos a encontrar tu grupo. Añade hasta 5 etiquetas.</div>
+                    </div>
+                    
+                    <div class="tags-container">
+                        <div class="tag">vecinos <i class="fas fa-times"></i></div>
+                        <div class="tag">barrio <i class="fas fa-times"></i></div>
+                        <div class="tag">comunidad <i class="fas fa-times"></i></div>
+                    </div>
+                </div>
+                
+                <div class="actions-container">
+                    <button type="button" class="btn btn-secondary">Guardar como borrador</button>
+                    <button type="submit" class="btn btn-primary">Crear grupo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Navegación móvil -->
+    <div class="mobile-nav">
+        <div class="mobile-nav-menu">
+            <a href="feed.html" class="mobile-nav-item">
+                <i class="fas fa-home"></i>
+                <span class="mobile-nav-label">Inicio</span>
+            </a>
+            <a href="mensajeria.html" class="mobile-nav-item">
+                <i class="fas fa-envelope"></i>
+                <span class="mobile-nav-label">Mensajes</span>
+            </a>
+            <a href="alertas.html" class="mobile-nav-item">
+                <i class="fas fa-bell"></i>
+                <span class="mobile-nav-label">Alertas</span>
+            </a>
+            <a href="grupos.html" class="mobile-nav-item active">
+                <i class="fas fa-users"></i>
+                <span class="mobile-nav-label">Grupos</span>
+            </a>
+            <a href="perfil.html" class="mobile-nav-item">
+                <i class="fas fa-user"></i>
+                <span class="mobile-nav-label">Perfil</span>
+            </a>
+        </div>
+    </div>
+    
+    <script src="../js/main.js"></script>
+</body>
+</html> 

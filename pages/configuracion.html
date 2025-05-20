@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración - ComunidadActiva</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar {
+            width: 260px;
+            background: var(--text-light);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar-item {
+            margin-bottom: var(--space-sm);
+        }
+        
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--border-radius-md);
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-link i {
+            margin-right: var(--space-md);
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-link:hover {
+            background-color: var(--primary-light-transparent);
+            color: var(--primary-color);
+        }
+        
+        .sidebar-link.active {
+            background-color: var(--primary-light-transparent);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .main-content {
+            margin-left: 260px;
+            padding: var(--space-lg);
+        }
+        
+        .config-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .config-header {
+            margin-bottom: var(--space-xl);
+        }
+        
+        .config-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--gray-light);
+            margin-bottom: var(--space-lg);
+            overflow-x: auto;
+        }
+        
+        .config-tab {
+            padding: var(--space-md) var(--space-lg);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        
+        .config-tab.active {
+            border-bottom: 3px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .config-section {
+            background-color: var(--text-light);
+            border-radius: var(--border-radius-md);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .config-section-title {
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+            padding-bottom: var(--space-sm);
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .profile-image-container {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: var(--space-md);
+            position: relative;
+        }
+        
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .image-upload-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            text-align: center;
+            padding: var(--space-sm);
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+        }
+        
+        .notification-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-md) 0;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .notification-option:last-child {
+            border-bottom: none;
+        }
+        
+        .notification-info {
+            flex: 1;
+        }
+        
+        .notification-toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        
+        .notification-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray-light);
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+        
+        .connected-app {
+            display: flex;
+            align-items: center;
+            padding: var(--space-md) 0;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .connected-app:last-child {
+            border-bottom: none;
+        }
+        
+        .app-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--border-radius-sm);
+            margin-right: var(--space-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+        
+        .app-info {
+            flex: 1;
+        }
+        
+        .app-name {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+        
+        .app-status {
+            font-size: var(--font-size-sm);
+            color: var(--gray-dark);
+        }
+        
+        .facebook-bg {
+            background-color: #3b5998;
+        }
+        
+        .google-bg {
+            background-color: #db4a39;
+        }
+        
+        .apple-bg {
+            background-color: #000000;
+        }
+        
+        .privacy-option {
+            margin-bottom: var(--space-md);
+        }
+        
+        .two-factor-steps {
+            margin-top: var(--space-md);
+            padding: var(--space-md);
+            background-color: var(--gray-lightest);
+            border-radius: var(--border-radius-md);
+        }
+        
+        .two-factor-step {
+            display: flex;
+            margin-bottom: var(--space-md);
+        }
+        
+        .two-factor-step:last-child {
+            margin-bottom: 0;
+        }
+        
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            margin-right: var(--space-md);
+            flex-shrink: 0;
+        }
+        
+        .device-item {
+            display: flex;
+            padding: var(--space-md) 0;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .device-item:last-child {
+            border-bottom: none;
+        }
+        
+        .device-icon {
+            margin-right: var(--space-md);
+            font-size: 24px;
+            color: var(--gray-dark);
+        }
+        
+        .device-info {
+            flex: 1;
+        }
+        
+        .device-name {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+        
+        .device-meta {
+            font-size: var(--font-size-sm);
+            color: var(--gray-dark);
+        }
+        
+        .current-device {
+            font-size: var(--font-size-xs);
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: var(--space-xs);
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding-bottom: 70px;
+            }
+            
+            .profile-image-container {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .config-tabs {
+                padding-bottom: 0;
+            }
+            
+            .config-tab {
+                padding: var(--space-sm) var(--space-md);
+                font-size: var(--font-size-sm);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar izquierdo -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="../Imagenes/comunidadActivaIsotipo.png" alt="ComunidadActiva" style="max-width: 40px; margin-right: 10px;">
+            <span style="font-weight: 700; font-size: var(--font-size-lg); color: var(--primary-dark);">ComunidadActiva</span>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li class="sidebar-item">
+                <a href="feed.html" class="sidebar-link">
+                    <i class="fas fa-home"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="perfil.html" class="sidebar-link">
+                    <i class="fas fa-user"></i>
+                    <span>Mi Perfil</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="mensajeria.html" class="sidebar-link">
+                    <i class="fas fa-comment"></i>
+                    <span>Mensajes</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="grupos.html" class="sidebar-link">
+                    <i class="fas fa-users"></i>
+                    <span>Grupos</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="alertas.html" class="sidebar-link">
+                    <i class="fas fa-bell"></i>
+                    <span>Alertas</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="mapa.html" class="sidebar-link">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Mapa</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="actividades.html" class="sidebar-link">
+                    <i class="fas fa-child"></i>
+                    <span>Actividades Infantiles</span>
+                </a>
+            </li>
+        </ul>
+        
+        <div style="margin-top: auto; padding-top: var(--space-xl);">
+            <a href="../index.html" class="sidebar-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <div class="config-container">
+            <div class="config-header">
+                <a href="perfil.html" class="btn btn-text" style="margin-bottom: var(--space-sm);"><i class="fas fa-arrow-left"></i> Volver al perfil</a>
+                <h1>Configuración de cuenta</h1>
+                <p class="text-muted">Administra tu cuenta y preferencias</p>
+            </div>
+            
+            <div class="config-tabs">
+                <div class="config-tab active">Perfil</div>
+                <div class="config-tab">Cuenta</div>
+                <div class="config-tab">Notificaciones</div>
+                <div class="config-tab">Privacidad</div>
+                <div class="config-tab">Seguridad</div>
+                <div class="config-tab">Aplicaciones conectadas</div>
+                <div class="config-tab">Dispositivos</div>
+            </div>
+            
+            <!-- Sección de Perfil -->
+            <div class="config-section">
+                <div class="config-section-title">
+                    <h2>Información personal</h2>
+                    <button class="btn btn-text btn-sm">Editar</button>
+                </div>
+                
+                <div style="display: flex; flex-wrap: wrap; gap: var(--space-lg);">
+                    <div>
+                        <div class="profile-image-container">
+                            <img src="../Imagenes/avatarUsuario.png" alt="Foto de perfil" class="profile-image">
+                            <div class="image-upload-overlay">
+                                <i class="fas fa-camera"></i> Cambiar
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-secondary" style="width: 100%;">Eliminar foto</button>
+                    </div>
+                    
+                    <div style="flex: 1; min-width: 300px;">
+                        <div class="form-group">
+                            <label for="name" class="form-label">Nombre completo</label>
+                            <input type="text" id="name" class="form-input" value="Alejandro Martínez" disabled>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email" class="form-label">Correo electrónico</label>
+                            <input type="email" id="email" class="form-input" value="alejandro.martinez@example.com" disabled>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone" class="form-label">Teléfono</label>
+                            <input type="tel" id="phone" class="form-input" value="11 5555-7890" disabled>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="address" class="form-label">Dirección</label>
+                            <input type="text" id="address" class="form-input" value="Torre B, Dpto 8C" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sección de Notificaciones -->
+            <div class="config-section">
+                <div class="config-section-title">
+                    <h2>Configuración de notificaciones</h2>
+                </div>
+                
+                <div class="notification-option">
+                    <div class="notification-info">
+                        <h3>Notificaciones push</h3>
+                        <p class="text-muted">Recibe notificaciones en tu dispositivo</p>
+                    </div>
+                    <label class="notification-toggle">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="notification-option">
+                    <div class="notification-info">
+                        <h3>Correos electrónicos</h3>
+                        <p class="text-muted">Recibe actualizaciones por correo</p>
+                    </div>
+                    <label class="notification-toggle">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="notification-option">
+                    <div class="notification-info">
+                        <h3>Alertas de seguridad</h3>
+                        <p class="text-muted">Alertas importantes sobre seguridad en el barrio</p>
+                    </div>
+                    <label class="notification-toggle">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="notification-option">
+                    <div class="notification-info">
+                        <h3>Anuncios y eventos</h3>
+                        <p class="text-muted">Novedades sobre eventos en el barrio</p>
+                    </div>
+                    <label class="notification-toggle">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="notification-option">
+                    <div class="notification-info">
+                        <h3>Grupos</h3>
+                        <p class="text-muted">Actualizaciones de los grupos a los que perteneces</p>
+                    </div>
+                    <label class="notification-toggle">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Sección de Privacidad -->
+            <div class="config-section">
+                <div class="config-section-title">
+                    <h2>Privacidad</h2>
+                </div>
+                
+                <div class="privacy-option">
+                    <h3>Visibilidad del perfil</h3>
+                    <div class="form-group">
+                        <select class="form-input">
+                            <option value="public">Todos los vecinos</option>
+                            <option value="friends">Solo mis contactos</option>
+                            <option value="private">Solo yo</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="privacy-option">
+                    <h3>Información visible</h3>
+                    <div style="margin-top: var(--space-sm);">
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="showEmail" checked>
+                            <label for="showEmail">Mostrar mi correo electrónico</label>
+                        </div>
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="showPhone" checked>
+                            <label for="showPhone">Mostrar mi número de teléfono</label>
+                        </div>
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="showAddress">
+                            <label for="showAddress">Mostrar mi dirección exacta</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="privacy-option">
+                    <h3>Bloquear usuarios</h3>
+                    <p class="text-muted">Administra la lista de usuarios bloqueados</p>
+                    <button class="btn btn-secondary mt-2">Gestionar usuarios bloqueados</button>
+                </div>
+                
+                <div class="privacy-option" style="margin-bottom: 0;">
+                    <h3>Descargar mis datos</h3>
+                    <p class="text-muted">Obtén una copia de los datos asociados a tu cuenta</p>
+                    <button class="btn btn-secondary mt-2">Solicitar mis datos</button>
+                </div>
+            </div>
+            
+            <!-- Sección de Seguridad -->
+            <div class="config-section">
+                <div class="config-section-title">
+                    <h2>Seguridad</h2>
+                </div>
+                
+                <div style="margin-bottom: var(--space-lg);">
+                    <h3>Cambiar contraseña</h3>
+                    <div class="form-group">
+                        <label for="currentPassword" class="form-label">Contraseña actual</label>
+                        <input type="password" id="currentPassword" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword" class="form-label">Nueva contraseña</label>
+                        <input type="password" id="newPassword" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label">Confirmar nueva contraseña</label>
+                        <input type="password" id="confirmPassword" class="form-input">
+                    </div>
+                    <button class="btn btn-primary">Cambiar contraseña</button>
+                </div>
+                
+                <div>
+                    <h3>Autenticación de dos factores</h3>
+                    <p class="text-muted">Añade una capa adicional de seguridad a tu cuenta</p>
+                    
+                    <div class="form-checkbox">
+                        <input type="checkbox" id="enable2FA">
+                        <label for="enable2FA">Activar autenticación de dos factores</label>
+                    </div>
+                    
+                    <div class="two-factor-steps">
+                        <div class="two-factor-step">
+                            <div class="step-number">1</div>
+                            <div>
+                                <p><strong>Descarga una aplicación de autenticación</strong></p>
+                                <p class="text-muted">Como Google Authenticator, Microsoft Authenticator o Authy.</p>
+                            </div>
+                        </div>
+                        <div class="two-factor-step">
+                            <div class="step-number">2</div>
+                            <div>
+                                <p><strong>Escanea el código QR</strong></p>
+                                <p class="text-muted">Usa la aplicación para escanear el código QR que te mostraremos.</p>
+                            </div>
+                        </div>
+                        <div class="two-factor-step">
+                            <div class="step-number">3</div>
+                            <div>
+                                <p><strong>Ingresa el código de verificación</strong></p>
+                                <p class="text-muted">Introduce el código que te muestra la aplicación para completar la configuración.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary mt-3">Configurar</button>
+                </div>
+            </div>
+            
+            <!-- Sección de Aplicaciones conectadas -->
+            <div class="config-section">
+                <div class="config-section-title">
+                    <h2>Aplicaciones conectadas</h2>
+                </div>
+                
+                <div class="connected-app">
+                    <div class="app-icon facebook-bg">
+                        <i class="fab fa-facebook-f"></i>
+                    </div>
+                    <div class="app-info">
+                        <div class="app-name">Facebook</div>
+                        <div class="app-status">Conectado · Última actividad: Hoy</div>
+                    </div>
+                    <button class="btn btn-sm btn-text">Desconectar</button>
+                </div>
+                
+                <div class="connected-app">
+                    <div class="app-icon google-bg">
+                        <i class="fab fa-google"></i>
+                    </div>
+                    <div class="app-info">
+                        <div class="app-name">Google</div>
+                        <div class="app-status">Conectado · Última actividad: Ayer</div>
+                    </div>
+                    <button class="btn btn-sm btn-text">Desconectar</button>
+                </div>
+                
+                <div style="margin-top: var(--space-lg);">
+                    <h3>Conectar nuevas aplicaciones</h3>
+                    <p class="text-muted">Vincula ComunidadActiva con otras plataformas</p>
+                    
+                    <div style="display: flex; gap: var(--space-md); margin-top: var(--space-md);">
+                        <button class="btn btn-secondary">
+                            <i class="fab fa-apple"></i> Apple
+                        </button>
+                        <button class="btn btn-secondary">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </button>
+                        <button class="btn btn-secondary">
+                            <i class="fab fa-linkedin"></i> LinkedIn
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sección de Dispositivos -->
+            <div class="config-section">
+                <div class="config-section-title">
+                    <h2>Sesiones activas</h2>
+                </div>
+                
+                <div class="device-item">
+                    <div class="device-icon">
+                        <i class="fas fa-laptop"></i>
+                    </div>
+                    <div class="device-info">
+                        <div class="device-name">Windows PC <span class="current-device">Este dispositivo</span></div>
+                        <div class="device-meta">Buenos Aires, Argentina · Edge · Hace 2 minutos</div>
+                    </div>
+                    <button class="btn btn-sm btn-text" disabled>Cerrar</button>
+                </div>
+                
+                <div class="device-item">
+                    <div class="device-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="device-info">
+                        <div class="device-name">iPhone 13</div>
+                        <div class="device-meta">Buenos Aires, Argentina · Safari · Hace 3 horas</div>
+                    </div>
+                    <button class="btn btn-sm btn-text">Cerrar</button>
+                </div>
+                
+                <div class="device-item">
+                    <div class="device-icon">
+                        <i class="fas fa-tablet-alt"></i>
+                    </div>
+                    <div class="device-info">
+                        <div class="device-name">iPad Pro</div>
+                        <div class="device-meta">Buenos Aires, Argentina · Safari · Hace 2 días</div>
+                    </div>
+                    <button class="btn btn-sm btn-text">Cerrar</button>
+                </div>
+                
+                <div style="margin-top: var(--space-lg);">
+                    <button class="btn btn-secondary">Cerrar todas las sesiones excepto esta</button>
+                </div>
+            </div>
+            
+            <div class="config-section" style="background-color: #FFF5F5; border: 1px solid #FFDBDB;">
+                <div class="config-section-title" style="border-color: #FFDBDB;">
+                    <h2 style="color: var(--error-color);">Eliminar cuenta</h2>
+                </div>
+                
+                <p>Al eliminar tu cuenta, todos tus datos personales serán eliminados permanentemente. Esta acción no se puede deshacer.</p>
+                
+                <button class="btn btn-danger mt-3">Eliminar mi cuenta</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navegación móvil -->
+    <div class="mobile-nav">
+        <div class="mobile-nav-menu">
+            <a href="feed.html" class="mobile-nav-item">
+                <i class="fas fa-home"></i>
+                <span class="mobile-nav-label">Inicio</span>
+            </a>
+            <a href="mensajeria.html" class="mobile-nav-item">
+                <i class="fas fa-envelope"></i>
+                <span class="mobile-nav-label">Mensajes</span>
+            </a>
+            <a href="alertas.html" class="mobile-nav-item">
+                <i class="fas fa-bell"></i>
+                <span class="mobile-nav-label">Alertas</span>
+            </a>
+            <a href="grupos.html" class="mobile-nav-item">
+                <i class="fas fa-users"></i>
+                <span class="mobile-nav-label">Grupos</span>
+            </a>
+            <a href="perfil.html" class="mobile-nav-item active">
+                <i class="fas fa-user"></i>
+                <span class="mobile-nav-label">Perfil</span>
+            </a>
+        </div>
+    </div>
+    
+    <script src="../js/main.js"></script>
+</body>
+</html> 

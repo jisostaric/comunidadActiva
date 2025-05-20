@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario - ComunidadActiva</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar {
+            width: 260px;
+            background: var(--text-light);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar-item {
+            margin-bottom: var(--space-sm);
+        }
+        
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--border-radius-md);
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-link i {
+            margin-right: var(--space-md);
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-link:hover {
+            background-color: var(--primary-light-transparent);
+            color: var(--primary-color);
+        }
+        
+        .sidebar-link.active {
+            background-color: var(--primary-light-transparent);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .main-content {
+            margin-left: 260px;
+            padding: var(--space-lg);
+        }
+        
+        .content-wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .calendar-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-md);
+        }
+        
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+        }
+        
+        .calendar-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            margin: 0 var(--space-md);
+        }
+        
+        .calendar-nav-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--gray-dark);
+            padding: var(--space-xs);
+        }
+        
+        .calendar-nav-btn:hover {
+            color: var(--primary-color);
+        }
+        
+        .calendar-view-options {
+            display: flex;
+            gap: var(--space-xs);
+        }
+        
+        .calendar-view-btn {
+            padding: var(--space-xs) var(--space-md);
+            border: 1px solid var(--gray-light);
+            border-radius: var(--border-radius-md);
+            background: var(--text-light);
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .calendar-view-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background-color: var(--gray-light);
+            border: 1px solid var(--gray-light);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .calendar-day-header {
+            background-color: var(--gray-lightest);
+            text-align: center;
+            padding: var(--space-sm);
+            font-weight: 500;
+        }
+        
+        .calendar-day {
+            background-color: var(--text-light);
+            min-height: 120px;
+            padding: var(--space-xs);
+            position: relative;
+        }
+        
+        .calendar-day-number {
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            margin-bottom: var(--space-xs);
+        }
+        
+        .calendar-day.today {
+            background-color: rgba(59, 142, 165, 0.05);
+        }
+        
+        .calendar-day.today .calendar-day-number {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .calendar-day.other-month {
+            background-color: var(--gray-lightest);
+            color: var(--gray-medium);
+        }
+        
+        .calendar-event {
+            font-size: var(--font-size-xs);
+            padding: 2px 5px;
+            border-radius: 3px;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+        }
+        
+        .event-type-community {
+            background-color: rgba(59, 142, 165, 0.2);
+            color: var(--primary-dark);
+        }
+        
+        .event-type-personal {
+            background-color: rgba(103, 58, 183, 0.2);
+            color: #673ab7;
+        }
+        
+        .event-type-important {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+        
+        .event-type-maintenance {
+            background-color: rgba(255, 152, 0, 0.2);
+            color: #ff9800;
+        }
+        
+        .event-type-sport {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+        
+        .calendar-more-events {
+            font-size: var(--font-size-xs);
+            color: var(--accent-color);
+            cursor: pointer;
+        }
+        
+        .upcoming-events {
+            background-color: var(--text-light);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-sm);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .upcoming-events-title {
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .upcoming-event {
+            display: flex;
+            margin-bottom: var(--space-md);
+            padding-bottom: var(--space-md);
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .upcoming-event:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .event-date {
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary-light);
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-right: var(--space-md);
+            color: var(--primary-dark);
+            text-align: center;
+            line-height: 1;
+        }
+        
+        .event-date-day {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+        }
+        
+        .event-date-month {
+            font-size: var(--font-size-xs);
+            text-transform: uppercase;
+        }
+        
+        .event-info {
+            flex: 1;
+        }
+        
+        .event-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .event-time {
+            font-size: var(--font-size-sm);
+            color: var(--gray-dark);
+            margin-bottom: 5px;
+        }
+        
+        .event-location {
+            font-size: var(--font-size-sm);
+            color: var(--gray-dark);
+        }
+        
+        .event-tag {
+            display: inline-block;
+            font-size: var(--font-size-xs);
+            padding: 2px 8px;
+            background-color: var(--secondary-light);
+            border-radius: 12px;
+            margin-left: var(--space-sm);
+            color: var(--primary-dark);
+        }
+        
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--text-light);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        
+        .mobile-nav-menu {
+            display: flex;
+            justify-content: space-around;
+            padding: var(--space-sm) 0;
+        }
+        
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--gray-dark);
+        }
+        
+        .mobile-nav-item.active {
+            color: var(--primary-color);
+        }
+        
+        .mobile-nav-item i {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        
+        .mobile-nav-label {
+            font-size: var(--font-size-xs);
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding-bottom: 70px;
+            }
+            
+            .mobile-nav {
+                display: block;
+            }
+            
+            .calendar-grid {
+                font-size: var(--font-size-xs);
+            }
+            
+            .calendar-day {
+                min-height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar izquierdo -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="../Imagenes/comunidadActivaIsotipo.png" alt="ComunidadActiva" style="max-width: 40px; margin-right: 10px;">
+            <span style="font-weight: 700; font-size: var(--font-size-lg); color: var(--primary-dark);">ComunidadActiva</span>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li class="sidebar-item">
+                <a href="feed.html" class="sidebar-link">
+                    <i class="fas fa-home"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="perfil.html" class="sidebar-link">
+                    <i class="fas fa-user"></i>
+                    <span>Mi Perfil</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="mensajeria.html" class="sidebar-link">
+                    <i class="fas fa-comment"></i>
+                    <span>Mensajes</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="grupos.html" class="sidebar-link">
+                    <i class="fas fa-users"></i>
+                    <span>Grupos</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="alertas.html" class="sidebar-link">
+                    <i class="fas fa-bell"></i>
+                    <span>Alertas</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="calendario.html" class="sidebar-link active">
+                    <i class="far fa-calendar"></i>
+                    <span>Calendario</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="mapa.html" class="sidebar-link">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Mapa</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="encuestas.html" class="sidebar-link">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Encuestas</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="actividades.html" class="sidebar-link">
+                    <i class="fas fa-child"></i>
+                    <span>Actividades Infantiles</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="configuracion.html" class="sidebar-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Configuración</span>
+                </a>
+            </li>
+        </ul>
+        
+        <div style="margin-top: auto; padding-top: var(--space-xl);">
+            <a href="../index.html" class="sidebar-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <div class="content-wrapper">
+            <div class="page-header">
+                <h1>Calendario de la comunidad</h1>
+                <button class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo evento</button>
+            </div>
+            
+            <div class="calendar-controls">
+                <div class="calendar-nav">
+                    <button class="calendar-nav-btn"><i class="fas fa-chevron-left"></i></button>
+                    <h2 class="calendar-title">Mayo 2023</h2>
+                    <button class="calendar-nav-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                
+                <div class="calendar-view-options">
+                    <button class="calendar-view-btn">Hoy</button>
+                    <button class="calendar-view-btn active">Mes</button>
+                    <button class="calendar-view-btn">Semana</button>
+                    <button class="calendar-view-btn">Día</button>
+                </div>
+            </div>
+            
+            <div class="calendar-grid">
+                <!-- Cabeceras de días -->
+                <div class="calendar-day-header">Domingo</div>
+                <div class="calendar-day-header">Lunes</div>
+                <div class="calendar-day-header">Martes</div>
+                <div class="calendar-day-header">Miércoles</div>
+                <div class="calendar-day-header">Jueves</div>
+                <div class="calendar-day-header">Viernes</div>
+                <div class="calendar-day-header">Sábado</div>
+                
+                <!-- Días del mes anterior -->
+                <div class="calendar-day other-month">
+                    <div class="calendar-day-number">30</div>
+                </div>
+                
+                <!-- Días del mes actual -->
+                <div class="calendar-day">
+                    <div class="calendar-day-number">1</div>
+                    <div class="calendar-event event-type-maintenance">Mant. piscina 10:00</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">2</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">3</div>
+                    <div class="calendar-event event-type-personal">Yoga 19:00</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">4</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">5</div>
+                    <div class="calendar-event event-type-sport">Fútbol 17:00</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">6</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">7</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">8</div>
+                    <div class="calendar-event event-type-maintenance">Jardinería 9:00</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">9</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">10</div>
+                    <div class="calendar-event event-type-personal">Yoga 19:00</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">11</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">12</div>
+                    <div class="calendar-event event-type-sport">Fútbol 17:00</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">13</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">14</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">15</div>
+                    <div class="calendar-event event-type-important">Asamblea 19:30</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">16</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">17</div>
+                    <div class="calendar-event event-type-personal">Yoga 19:00</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">18</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">19</div>
+                    <div class="calendar-event event-type-sport">Fútbol 17:00</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">20</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">21</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">22</div>
+                    <div class="calendar-event event-type-maintenance">Limpieza SUM 9:00</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">23</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">24</div>
+                    <div class="calendar-event event-type-personal">Yoga 19:00</div>
+                </div>
+                <div class="calendar-day today">
+                    <div class="calendar-day-number">25</div>
+                    <div class="calendar-event event-type-community">Parrillada 13:00</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">26</div>
+                    <div class="calendar-event event-type-sport">Fútbol 17:00</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">27</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">28</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">29</div>
+                    <div class="calendar-event event-type-maintenance">Jardinería 9:00</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">30</div>
+                </div>
+                <div class="calendar-day">
+                    <div class="calendar-day-number">31</div>
+                    <div class="calendar-event event-type-personal">Yoga 19:00</div>
+                </div>
+                
+                <!-- Días del mes siguiente -->
+                <div class="calendar-day other-month">
+                    <div class="calendar-day-number">1</div>
+                </div>
+                <div class="calendar-day other-month">
+                    <div class="calendar-day-number">2</div>
+                </div>
+                <div class="calendar-day other-month">
+                    <div class="calendar-day-number">3</div>
+                </div>
+            </div>
+            
+            <div class="upcoming-events">
+                <div class="upcoming-events-title">
+                    <h3>Próximos eventos</h3>
+                    <div class="event-filters">
+                        <button class="btn btn-text btn-sm"><i class="fas fa-filter"></i> Filtrar</button>
+                    </div>
+                </div>
+                
+                <div class="upcoming-event">
+                    <div class="event-date">
+                        <div class="event-date-day">25</div>
+                        <div class="event-date-month">May</div>
+                    </div>
+                    <div class="event-info">
+                        <div class="event-title">Parrillada vecinal <span class="event-tag">Social</span></div>
+                        <div class="event-time"><i class="far fa-clock"></i> 13:00 - 19:00</div>
+                        <div class="event-location"><i class="fas fa-map-marker-alt"></i> Casa de Laura, Sector Norte, Lote 23</div>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm btn-secondary"><i class="far fa-calendar-check"></i> Me interesa</button>
+                    </div>
+                </div>
+                
+                <div class="upcoming-event">
+                    <div class="event-date">
+                        <div class="event-date-day">26</div>
+                        <div class="event-date-month">May</div>
+                    </div>
+                    <div class="event-info">
+                        <div class="event-title">Partido de fútbol <span class="event-tag">Deportes</span></div>
+                        <div class="event-time"><i class="far fa-clock"></i> 17:00 - 19:00</div>
+                        <div class="event-location"><i class="fas fa-map-marker-alt"></i> Cancha del barrio</div>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm btn-secondary"><i class="far fa-calendar-check"></i> Me interesa</button>
+                    </div>
+                </div>
+                
+                <div class="upcoming-event">
+                    <div class="event-date">
+                        <div class="event-date-day">29</div>
+                        <div class="event-date-month">May</div>
+                    </div>
+                    <div class="event-info">
+                        <div class="event-title">Mantenimiento de jardines <span class="event-tag">Mantenimiento</span></div>
+                        <div class="event-time"><i class="far fa-clock"></i> 9:00 - 12:00</div>
+                        <div class="event-location"><i class="fas fa-map-marker-alt"></i> Áreas verdes comunes</div>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm btn-secondary"><i class="far fa-calendar-check"></i> Me interesa</button>
+                    </div>
+                </div>
+                
+                <div class="upcoming-event">
+                    <div class="event-date">
+                        <div class="event-date-day">31</div>
+                        <div class="event-date-month">May</div>
+                    </div>
+                    <div class="event-info">
+                        <div class="event-title">Clase de Yoga <span class="event-tag">Bienestar</span></div>
+                        <div class="event-time"><i class="far fa-clock"></i> 19:00 - 20:00</div>
+                        <div class="event-location"><i class="fas fa-map-marker-alt"></i> SUM del consorcio</div>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm btn-secondary"><i class="far fa-calendar-check"></i> Me interesa</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navegación móvil -->
+    <div class="mobile-nav">
+        <div class="mobile-nav-menu">
+            <a href="feed.html" class="mobile-nav-item">
+                <i class="fas fa-home"></i>
+                <span class="mobile-nav-label">Inicio</span>
+            </a>
+            <a href="mensajeria.html" class="mobile-nav-item">
+                <i class="fas fa-envelope"></i>
+                <span class="mobile-nav-label">Mensajes</span>
+            </a>
+            <a href="alertas.html" class="mobile-nav-item">
+                <i class="fas fa-bell"></i>
+                <span class="mobile-nav-label">Alertas</span>
+            </a>
+            <a href="grupos.html" class="mobile-nav-item">
+                <i class="fas fa-users"></i>
+                <span class="mobile-nav-label">Grupos</span>
+            </a>
+            <a href="perfil.html" class="mobile-nav-item">
+                <i class="fas fa-user"></i>
+                <span class="mobile-nav-label">Perfil</span>
+            </a>
+        </div>
+    </div>
+    
+    <script src="../js/main.js"></script>
+</body>
+</html> 

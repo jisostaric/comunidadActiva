@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuestas - ComunidadActiva</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar {
+            width: 260px;
+            background: var(--text-light);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-sm);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar-item {
+            margin-bottom: var(--space-sm);
+        }
+        
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--border-radius-md);
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-link i {
+            margin-right: var(--space-md);
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-link:hover {
+            background-color: var(--primary-light-transparent);
+            color: var(--primary-color);
+        }
+        
+        .sidebar-link.active {
+            background-color: var(--primary-light-transparent);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .main-content {
+            margin-left: 260px;
+            padding: var(--space-lg);
+        }
+        
+        .content-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .tab-nav {
+            display: flex;
+            border-bottom: 1px solid var(--gray-light);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .tab-item {
+            padding: var(--space-md) var(--space-lg);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+        }
+        
+        .tab-item.active {
+            border-bottom: 3px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .survey-card {
+            background-color: var(--text-light);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--space-lg);
+            overflow: hidden;
+        }
+        
+        .survey-header {
+            padding: var(--space-lg);
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .survey-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+        }
+        
+        .survey-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: var(--font-size-sm);
+            color: var(--gray-dark);
+        }
+        
+        .survey-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .survey-author-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: var(--space-xs);
+        }
+        
+        .survey-author-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .survey-status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: var(--font-size-xs);
+            font-weight: 500;
+        }
+        
+        .survey-status.active {
+            background-color: rgba(33, 150, 83, 0.1);
+            color: var(--success-color);
+        }
+        
+        .survey-status.closed {
+            background-color: rgba(242, 153, 74, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .survey-content {
+            padding: var(--space-lg);
+        }
+        
+        .survey-description {
+            margin-bottom: var(--space-md);
+            color: var(--gray-dark);
+        }
+        
+        .survey-question {
+            margin-bottom: var(--space-md);
+        }
+        
+        .question-text {
+            font-weight: 500;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .question-options {
+            padding-left: var(--space-md);
+        }
+        
+        .question-option {
+            margin-bottom: var(--space-sm);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: var(--gray-light);
+            border-radius: 4px;
+            margin-top: var(--space-xs);
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+        }
+        
+        .option-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: var(--font-size-xs);
+            color: var(--gray-dark);
+            margin-top: 3px;
+        }
+        
+        .survey-footer {
+            padding: var(--space-md) var(--space-lg);
+            border-top: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .survey-stats {
+            font-size: var(--font-size-sm);
+            color: var(--gray-dark);
+        }
+        
+        .survey-actions {
+            display: flex;
+            gap: var(--space-sm);
+        }
+        
+        .create-survey-card {
+            padding: var(--space-lg);
+        }
+        
+        .form-section {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .form-section-title {
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+        }
+        
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--text-light);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        
+        .mobile-nav-menu {
+            display: flex;
+            justify-content: space-around;
+            padding: var(--space-sm) 0;
+        }
+        
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--gray-dark);
+        }
+        
+        .mobile-nav-item.active {
+            color: var(--primary-color);
+        }
+        
+        .mobile-nav-item i {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        
+        .mobile-nav-label {
+            font-size: var(--font-size-xs);
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding-bottom: 70px;
+            }
+            
+            .mobile-nav {
+                display: block;
+            }
+            
+            .tab-nav {
+                overflow-x: auto;
+            }
+            
+            .tab-item {
+                padding: var(--space-sm) var(--space-md);
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar izquierdo -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="../Imagenes/comunidadActivaIsotipo.png" alt="ComunidadActiva" style="max-width: 40px; margin-right: 10px;">
+            <span style="font-weight: 700; font-size: var(--font-size-lg); color: var(--primary-dark);">ComunidadActiva</span>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li class="sidebar-item">
+                <a href="feed.html" class="sidebar-link">
+                    <i class="fas fa-home"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="perfil.html" class="sidebar-link">
+                    <i class="fas fa-user"></i>
+                    <span>Mi Perfil</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="mensajeria.html" class="sidebar-link">
+                    <i class="fas fa-comment"></i>
+                    <span>Mensajes</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="grupos.html" class="sidebar-link">
+                    <i class="fas fa-users"></i>
+                    <span>Grupos</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="alertas.html" class="sidebar-link">
+                    <i class="fas fa-bell"></i>
+                    <span>Alertas</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="calendario.html" class="sidebar-link">
+                    <i class="far fa-calendar"></i>
+                    <span>Calendario</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="mapa.html" class="sidebar-link">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Mapa</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="encuestas.html" class="sidebar-link active">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Encuestas</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="actividades.html" class="sidebar-link">
+                    <i class="fas fa-child"></i>
+                    <span>Actividades Infantiles</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="configuracion.html" class="sidebar-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Configuración</span>
+                </a>
+            </li>
+        </ul>
+        
+        <div style="margin-top: auto; padding-top: var(--space-xl);">
+            <a href="../index.html" class="sidebar-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <div class="content-wrapper">
+            <div class="page-header">
+                <h1>Encuestas</h1>
+                <button class="btn btn-primary"><i class="fas fa-plus"></i> Crear encuesta</button>
+            </div>
+            
+            <div class="tab-nav">
+                <div class="tab-item active">Todas las encuestas</div>
+                <div class="tab-item">Activas</div>
+                <div class="tab-item">Mis encuestas</div>
+                <div class="tab-item">Encuestas completadas</div>
+            </div>
+            
+            <!-- Encuesta 1 -->
+            <div class="survey-card">
+                <div class="survey-header">
+                    <div class="survey-title">¿Qué mejoras necesita el área común?</div>
+                    <div class="survey-meta">
+                        <div class="survey-author">
+                            <div class="survey-author-avatar">
+                                <img src="../Imagenes/avatarUsuario.png" alt="Administración">
+                            </div>
+                            <span>Administración · 2 días</span>
+                        </div>
+                        <div class="survey-status active">Activa</div>
+                    </div>
+                </div>
+                
+                <div class="survey-content">
+                    <div class="survey-description">
+                        <p>Estamos evaluando posibles mejoras en los espacios comunes. Por favor selecciona las opciones que consideres más importantes.</p>
+                    </div>
+                    
+                    <div class="survey-question">
+                        <div class="question-text">¿Cuál de estas mejoras crees que es más urgente para el área común?</div>
+                        <div class="question-options">
+                            <div class="question-option">
+                                <div class="form-radio">
+                                    <input type="radio" id="option1" name="question1">
+                                    <label for="option1">Renovación de mobiliario en el SUM</label>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 45%"></div>
+                                </div>
+                                <div class="option-stats">
+                                    <span>45%</span>
+                                    <span>23 votos</span>
+                                </div>
+                            </div>
+                            
+                            <div class="question-option">
+                                <div class="form-radio">
+                                    <input type="radio" id="option2" name="question1">
+                                    <label for="option2">Mejora de la iluminación exterior</label>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 30%"></div>
+                                </div>
+                                <div class="option-stats">
+                                    <span>30%</span>
+                                    <span>15 votos</span>
+                                </div>
+                            </div>
+                            
+                            <div class="question-option">
+                                <div class="form-radio">
+                                    <input type="radio" id="option3" name="question1">
+                                    <label for="option3">Renovación de los juegos infantiles</label>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 15%"></div>
+                                </div>
+                                <div class="option-stats">
+                                    <span>15%</span>
+                                    <span>8 votos</span>
+                                </div>
+                            </div>
+                            
+                            <div class="question-option">
+                                <div class="form-radio">
+                                    <input type="radio" id="option4" name="question1">
+                                    <label for="option4">Crear un espacio para mascotas</label>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 10%"></div>
+                                </div>
+                                <div class="option-stats">
+                                    <span>10%</span>
+                                    <span>5 votos</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary">Votar</button>
+                </div>
+                
+                <div class="survey-footer">
+                    <div class="survey-stats">
+                        <i class="fas fa-users"></i> 51 vecinos han participado | <i class="fas fa-clock"></i> Finaliza en 5 días
+                    </div>
+                    <div class="survey-actions">
+                        <button class="btn btn-text"><i class="far fa-comment"></i> Comentar</button>
+                        <button class="btn btn-text"><i class="fas fa-share-alt"></i> Compartir</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Encuesta 2 -->
+            <div class="survey-card">
+                <div class="survey-header">
+                    <div class="survey-title">Horarios para la nueva clase de yoga</div>
+                    <div class="survey-meta">
+                        <div class="survey-author">
+                            <div class="survey-author-avatar">
+                                <img src="../Imagenes/avatarUsuario.png" alt="Laura Méndez">
+                            </div>
+                            <span>Laura Méndez · 5 días</span>
+                        </div>
+                        <div class="survey-status active">Activa</div>
+                    </div>
+                </div>
+                
+                <div class="survey-content">
+                    <div class="survey-description">
+                        <p>Estamos organizando clases de yoga en el SUM. Por favor, vota por los horarios que te resulten más convenientes.</p>
+                    </div>
+                    
+                    <div class="survey-question">
+                        <div class="question-text">¿Qué horario prefieres para las clases de yoga?</div>
+                        <div class="question-options">
+                            <div class="question-option">
+                                <div class="form-checkbox">
+                                    <input type="checkbox" id="yoga1">
+                                    <label for="yoga1">Lunes y miércoles 8:00-9:00</label>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 25%"></div>
+                                </div>
+                                <div class="option-stats">
+                                    <span>25%</span>
+                                    <span>12 votos</span>
+                                </div>
+                            </div>
+                            
+                            <div class="question-option">
+                                <div class="form-checkbox">
+                                    <input type="checkbox" id="yoga2">
+                                    <label for="yoga2">Lunes y miércoles 19:00-20:00</label>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 42%"></div>
+                                </div>
+                                <div class="option-stats">
+                                    <span>42%</span>
+                                    <span>20 votos</span>
+                                </div>
+                            </div>
+                            
+                            <div class="question-option">
+                                <div class="form-checkbox">
+                                    <input type="checkbox" id="yoga3">
+                                    <label for="yoga3">Martes y jueves 9:00-10:00</label>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 15%"></div>
+                                </div>
+                                <div class="option-stats">
+                                    <span>15%</span>
+                                    <span>7 votos</span>
+                                </div>
+                            </div>
+                            
+                            <div class="question-option">
+                                <div class="form-checkbox">
+                                    <input type="checkbox" id="yoga4">
+                                    <label for="yoga4">Martes y jueves 18:00-19:00</label>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 18%"></div>
+                                </div>
+                                <div class="option-stats">
+                                    <span>18%</span>
+                                    <span>9 votos</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary">Votar</button>
+                </div>
+                
+                <div class="survey-footer">
+                    <div class="survey-stats">
+                        <i class="fas fa-users"></i> 35 vecinos han participado | <i class="fas fa-clock"></i> Finaliza en 2 días
+                    </div>
+                    <div class="survey-actions">
+                        <button class="btn btn-text"><i class="far fa-comment"></i> Comentar</button>
+                        <button class="btn btn-text"><i class="fas fa-share-alt"></i> Compartir</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Encuesta 3 -->
+            <div class="survey-card">
+                <div class="survey-header">
+                    <div class="survey-title">Elección del logo del consorcio</div>
+                    <div class="survey-meta">
+                        <div class="survey-author">
+                            <div class="survey-author-avatar">
+                                <img src="../Imagenes/avatarUsuario.png" alt="Administración">
+                            </div>
+                            <span>Administración · 2 semanas</span>
+                        </div>
+                        <div class="survey-status closed">Finalizada</div>
+                    </div>
+                </div>
+                
+                <div class="survey-content">
+                    <div class="survey-description">
+                        <p>Por favor, elegí tu opción favorita para el nuevo logo del consorcio. El diseño ganador se utilizará en toda la comunicación oficial.</p>
+                    </div>
+                    
+                    <div class="survey-question">
+                        <div class="question-text">Elige tu diseño preferido:</div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-md); margin-bottom: var(--space-md);">
+                            <div style="text-align: center;">
+                                <div style="height: 120px; background-color: var(--primary-light); border-radius: var(--border-radius-sm); margin-bottom: var(--space-xs); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px;">
+                                    <i class="fas fa-tree"></i>
+                                </div>
+                                <div class="form-radio">
+                                    <input type="radio" id="logo1" name="logoChoice" disabled>
+                                    <label for="logo1">Opción 1</label>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 62%"></div>
+                                </div>
+                                <div class="option-stats">
+                                    <span>62%</span>
+                                    <span>43 votos</span>
+                                </div>
+                            </div>
+                            
+                            <div style="text-align: center;">
+                                <div style="height: 120px; background-color: var(--accent-light); border-radius: var(--border-radius-sm); margin-bottom: var(--space-xs); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px;">
+                                    <i class="fas fa-home"></i>
+                                </div>
+                                <div class="form-radio">
+                                    <input type="radio" id="logo2" name="logoChoice" disabled>
+                                    <label for="logo2">Opción 2</label>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 25%"></div>
+                                </div>
+                                <div class="option-stats">
+                                    <span>25%</span>
+                                    <span>17 votos</span>
+                                </div>
+                            </div>
+                            
+                            <div style="text-align: center;">
+                                <div style="height: 120px; background-color: var(--secondary-light); border-radius: var(--border-radius-sm); margin-bottom: var(--space-xs); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px;">
+                                    <i class="fas fa-mountain"></i>
+                                </div>
+                                <div class="form-radio">
+                                    <input type="radio" id="logo3" name="logoChoice" disabled>
+                                    <label for="logo3">Opción 3</label>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 13%"></div>
+                                </div>
+                                <div class="option-stats">
+                                    <span>13%</span>
+                                    <span>9 votos</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> Encuesta finalizada: La opción 1 fue la ganadora y será utilizada como nuevo logo.
+                    </div>
+                </div>
+                
+                <div class="survey-footer">
+                    <div class="survey-stats">
+                        <i class="fas fa-users"></i> 69 vecinos participaron | <i class="fas fa-check-circle"></i> Finalizada el 12/05/2023
+                    </div>
+                    <div class="survey-actions">
+                        <button class="btn btn-text"><i class="far fa-comment"></i> Ver comentarios (12)</button>
+                        <button class="btn btn-text"><i class="fas fa-download"></i> Descargar resultados</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navegación móvil -->
+    <div class="mobile-nav">
+        <div class="mobile-nav-menu">
+            <a href="feed.html" class="mobile-nav-item">
+                <i class="fas fa-home"></i>
+                <span class="mobile-nav-label">Inicio</span>
+            </a>
+            <a href="mensajeria.html" class="mobile-nav-item">
+                <i class="fas fa-envelope"></i>
+                <span class="mobile-nav-label">Mensajes</span>
+            </a>
+            <a href="alertas.html" class="mobile-nav-item">
+                <i class="fas fa-bell"></i>
+                <span class="mobile-nav-label">Alertas</span>
+            </a>
+            <a href="grupos.html" class="mobile-nav-item">
+                <i class="fas fa-users"></i>
+                <span class="mobile-nav-label">Grupos</span>
+            </a>
+            <a href="perfil.html" class="mobile-nav-item">
+                <i class="fas fa-user"></i>
+                <span class="mobile-nav-label">Perfil</span>
+            </a>
+        </div>
+    </div>
+    
+    <script src="../js/main.js"></script>
+</body>
+</html> 
